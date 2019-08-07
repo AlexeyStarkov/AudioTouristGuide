@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using AudioTouristGuide.DTO.Enums;
+using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
 
-namespace AudioTouristGuide.WebAPI.Database.Models.Tour
+namespace AudioTouristGuide.WebAPI.Database.TourModels
 {
     public class Tour
     {
@@ -15,6 +16,9 @@ namespace AudioTouristGuide.WebAPI.Database.Models.Tour
         public decimal GrossPrice { get; set; }
         public string LogoUrl { get; set; }
 
-        public IList<TourItem> TourItems { get; set; }
+        public IList<TourPlace> TourPlaces { get; set; }
+        public IList<MemberPurchasedTour> MemberPurchasedTours { get; set; }
+        public IList<MemberFavoriteTour> MemberFavoriteTours { get; set; }
+        public IList<MemberDesiredTour> MemberDesiredTours { get; set; }
     }
 }

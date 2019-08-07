@@ -7,8 +7,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
     <Folder Include="Database\" />
-    <Folder Include="Database\Models\" />
-    <Folder Include="Database\Models\Tour\" />
+    <Folder Include="Database\MemberModels\" />
+    <Folder Include="Database\TourModels\" />
+    <Folder Include="Database\Enums\" />
+    <Folder Include="Database\JoinTablesModels\" />
   </ItemGroup>
 
   <ItemGroup>
