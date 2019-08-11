@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AudioTouristGuide.WebAPI.Database;
+using AudioTouristGuide.WebAPI.Database.TourModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AudioTouristGuide.WebAPI.Controllers
 {
@@ -10,11 +13,28 @@ namespace AudioTouristGuide.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly DatabaseContext _dbContext;
+
+        public ValuesController(DatabaseContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<JsonResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            await _dbContext.Places.AddAsync(
+                new Place()
+                {
+                    Name = "TestPlace",
+                    Description = "Privet"
+                });
+            await _dbContext.SaveChangesAsync();
+
+            var places = _dbContext.Places.ToList();
+
+            return new JsonResult(places);
         }
 
         // GET api/values/5

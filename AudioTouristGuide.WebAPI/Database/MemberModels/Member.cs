@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using AudioTouristGuide.WebAPI.Database.Enums;
 using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AudioTouristGuide.WebAPI.Database.MemberModels
 {
     public class Member
     {
-        public long Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long MemberId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AvatarImageUrl { get; set; }
@@ -22,8 +28,8 @@ namespace AudioTouristGuide.WebAPI.Database.MemberModels
         public bool IsEmailValidated { get; set; }
         public bool IsMobilePhoneNumberValidated { get; set; }
 
-        public IList<MemberPurchasedTour> MemberPurchasedTours { get; set; }
-        public IList<MemberFavoriteTour> MemberFavoriteTours { get; set; }
-        public IList<MemberDesiredTour> MemberDesiredTour { get; set; }
+        public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }
+        public ICollection<MemberFavoriteTour> MemberFavoriteTours { get; set; }
+        public ICollection<MemberDesiredTour> MemberDesiredTour { get; set; }
     }
 }

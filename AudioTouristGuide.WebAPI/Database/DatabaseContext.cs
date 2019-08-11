@@ -12,9 +12,8 @@ namespace AudioTouristGuide.WebAPI.Database
         public DbSet<Place> Places { get; set; }
         public DbSet<Tour> Tours { get; set; }
 
-        public DatabaseContext()
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -73,11 +72,6 @@ namespace AudioTouristGuide.WebAPI.Database
                 .HasOne(mt => mt.Member)
                 .WithMany(t => t.MemberDesiredTour)
                 .HasForeignKey(mt => mt.MemberId);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=relationsdb;Trusted_Connection=True;");
         }
     }
 }
