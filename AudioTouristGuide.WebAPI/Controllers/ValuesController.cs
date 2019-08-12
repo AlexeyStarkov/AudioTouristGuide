@@ -24,13 +24,13 @@ namespace AudioTouristGuide.WebAPI.Controllers
         [HttpGet]
         public async Task<JsonResult> Get()
         {
-            await _dbContext.Places.AddAsync(
-                new Place()
-                {
-                    Name = "TestPlace",
-                    Description = "Privet"
-                });
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.Places.AddAsync(
+            //    new Place()
+            //    {
+            //        Name = "TestPlace",
+            //        Description = "Privet"
+            //    });
+            //await _dbContext.SaveChangesAsync();
 
             var places = _dbContext.Places.ToList();
 
