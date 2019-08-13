@@ -11,6 +11,7 @@
     <Folder Include="Database\TourModels\" />
     <Folder Include="Database\Enums\" />
     <Folder Include="Database\JoinTablesModels\" />
+    <Folder Include="SwaggerTools\" />
   </ItemGroup>
 
   <ItemGroup>

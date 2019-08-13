@@ -1,4 +1,5 @@
 ﻿using AudioTouristGuide.WebAPI.Database;
+using AudioTouristGuide.WebAPI.SwaggerTools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,10 @@ namespace AudioTouristGuide.WebAPI
             {
                 services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-                services.AddSwaggerGen(c =>
+                services.AddSwaggerGen(options =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Audio Tourist Guide API", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Audio Tourist Guide API", Version = "v1" });
+                    options.OperationFilter<FileUploadOperationFilter>();
                 });
 
                 services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Development")));
@@ -52,6 +54,7 @@ namespace AudioTouristGuide.WebAPI
                     app.UseHsts();
                 }
 
+                app.UseStaticFiles();
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger();
 

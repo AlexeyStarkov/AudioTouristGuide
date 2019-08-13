@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AudioTouristGuide.WebAPI.Database;
 using AudioTouristGuide.WebAPI.Database.TourModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -60,6 +62,31 @@ namespace AudioTouristGuide.WebAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [HttpPost]
+        [Route("UploadFile")]
+        public async Task PostFile(IFormFile formFile)
+        {
+            try
+            {
+                if (formFile != null && formFile.Length > 0)
+                {
+                    var fileName = Path.GetFileName(formFile.FileName);
+                    var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    Directory.CreateDirectory(imagesPath);
+
+                    using (var fileStream = new FileStream(Path.Combine(imagesPath, fileName), FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(fileStream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
     }
 }
