@@ -12,6 +12,9 @@ namespace AudioTouristGuide.WebAPI.Database
         public DbSet<Place> Places { get; set; }
         public DbSet<Tour> Tours { get; set; }
 
+        public DbSet<AudioAsset> AudioAssets { get; set; }
+        public DbSet<ImageAsset> ImageAssets { get; set; }
+
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }

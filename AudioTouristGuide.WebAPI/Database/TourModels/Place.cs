@@ -16,6 +16,10 @@ namespace AudioTouristGuide.WebAPI.Database.TourModels
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        public AudioAsset AudioAsset { get; set; }
+
+        public ICollection<ImageAsset> ImageAssets { get; set; }
+
         public ICollection<TourPlace> TourPlaces { get; set; }
     }
 }

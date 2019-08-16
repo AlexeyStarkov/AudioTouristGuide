@@ -12,6 +12,8 @@
     <Folder Include="Database\Enums\" />
     <Folder Include="Database\JoinTablesModels\" />
     <Folder Include="SwaggerTools\" />
+    <Folder Include="Tools\" />
+    <Folder Include="DTO\" />
   </ItemGroup>
 
   <ItemGroup>

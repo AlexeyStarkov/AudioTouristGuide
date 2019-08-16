@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using AudioTouristGuide.DTO.Enums;
 using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
+using Newtonsoft.Json;
 
 namespace AudioTouristGuide.WebAPI.Database.TourModels
 {
@@ -21,8 +22,12 @@ namespace AudioTouristGuide.WebAPI.Database.TourModels
         public string LogoUrl { get; set; }
 
         public ICollection<TourPlace> TourPlaces { get; set; }
+
+        [JsonIgnore]
         public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }
+        [JsonIgnore]
         public ICollection<MemberFavoriteTour> MemberFavoriteTours { get; set; }
+        [JsonIgnore]
         public ICollection<MemberDesiredTour> MemberDesiredTours { get; set; }
     }
 }

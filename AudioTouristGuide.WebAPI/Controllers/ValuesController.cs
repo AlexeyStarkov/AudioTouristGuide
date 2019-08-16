@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,26 +67,26 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
         [HttpPost]
         [Route("UploadFile")]
-        public async Task PostFile(IFormFile formFile)
+        public async Task PostFile(IFormFileCollection files)
         {
-            try
-            {
-                if (formFile != null && formFile.Length > 0)
-                {
-                    var fileName = Path.GetFileName(formFile.FileName);
-                    var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                    Directory.CreateDirectory(imagesPath);
+            //try
+            //{
+            //    if (formFile != null && formFile.Length > 0)
+            //    {
+            //        var fileName = Path.GetFileName(formFile.FileName);
+            //        var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            //        Directory.CreateDirectory(imagesPath);
 
-                    using (var fileStream = new FileStream(Path.Combine(imagesPath, fileName), FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(fileStream);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
+            //        using (var fileStream = new FileStream(Path.Combine(imagesPath, fileName), FileMode.Create))
+            //        {
+            //            await formFile.CopyToAsync(fileStream);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-            }
+            //}
             
         }
     }

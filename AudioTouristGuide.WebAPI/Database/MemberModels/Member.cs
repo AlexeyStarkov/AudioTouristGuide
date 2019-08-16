@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using AudioTouristGuide.WebAPI.Database.Enums;
 using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 
 namespace AudioTouristGuide.WebAPI.Database.MemberModels
 {
@@ -28,8 +29,11 @@ namespace AudioTouristGuide.WebAPI.Database.MemberModels
         public bool IsEmailValidated { get; set; }
         public bool IsMobilePhoneNumberValidated { get; set; }
 
+        [JsonIgnore]
         public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }
+        [JsonIgnore]
         public ICollection<MemberFavoriteTour> MemberFavoriteTours { get; set; }
+        [JsonIgnore]
         public ICollection<MemberDesiredTour> MemberDesiredTour { get; set; }
     }
 }
