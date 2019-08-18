@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AudioTouristGuide.DTO.Models.AddNewTourZip;
 using AudioTouristGuide.WebAPI.Database;
+using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
 using AudioTouristGuide.WebAPI.Database.TourModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +37,10 @@ namespace AudioTouristGuide.WebAPI.Controllers
             //    });
             //await _dbContext.SaveChangesAsync();
 
-            var places = _dbContext.Places.ToList();
+            //var places = _dbContext.Places.ToList();
 
-            return new JsonResult(places);
+
+            return new JsonResult(null);
         }
 
         // GET api/values/5

@@ -29,11 +29,8 @@ namespace AudioTouristGuide.WebAPI.Database.MemberModels
         public bool IsEmailValidated { get; set; }
         public bool IsMobilePhoneNumberValidated { get; set; }
 
-        [JsonIgnore]
         public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }
-        [JsonIgnore]
         public ICollection<MemberFavoriteTour> MemberFavoriteTours { get; set; }
-        [JsonIgnore]
         public ICollection<MemberDesiredTour> MemberDesiredTour { get; set; }
     }
 }
