@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AudioTouristGuide.DTO.Enums;
 using AudioTouristGuide.DTO.Models.AddNewTourZip;
 using AudioTouristGuide.WebAPI.Database;
 using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
@@ -16,9 +11,7 @@ using AudioTouristGuide.WebAPI.Database.TourModels;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators.Internal;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,7 +49,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             Directory.CreateDirectory(tempDirectoryPath);
 
             if (!formFile.FileName.Contains("zip"))
-                return new JsonResult("File should have .zip type") { StatusCode = 400 };
+                return new JsonResult("The tour archive file should have .zip type") { StatusCode = 400 };
 
             try
             {

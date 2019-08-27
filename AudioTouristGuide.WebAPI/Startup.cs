@@ -70,8 +70,8 @@ namespace AudioTouristGuide.WebAPI
 
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {
-                    var context = serviceScope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                    context.Database.Migrate();
+                    var dbContext = serviceScope.ServiceProvider.GetRequiredService<DatabaseContext>();
+                    dbContext.Database.Migrate();
                 }
             }
             catch (System.Exception ex)
