@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using AudioTouristGuide.DTO.Models.AddNewTourZip;
+using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.WebAPI.Database;
 using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
 using AudioTouristGuide.WebAPI.Database.TourModels;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,30 +32,66 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
         // GET: api/tour
         [HttpGet]
-        public JsonResult Get()
+        public async Task<JsonResult> Get()
         {
-            return new JsonResult(_dbContext.Tours.ToList());
+            var dbTours = await _dbContext.Tours
+                .Include(t => t.TourPlaces)
+                    .ThenInclude(tp => tp.Place.AudioAsset)
+                .Include(t => t.TourPlaces)
+                    .ThenInclude(tp => tp.Place.ImageAssets)
+                .ToListAsync();
+
+            var dtoTours = dbTours.Select(dbTour => new TourModel(
+                dbTour.TourId,
+                dbTour.Name,
+                dbTour.Description,
+                dbTour.EstimatedDuration,
+                dbTour.CountryName,
+                dbTour.DataSize,
+                dbTour.LogoUrl,
+                dbTour.TourPlaces?.Select(x => new PlaceModel(
+                    x.Place.PlaceId,
+                    x.Place.Name,
+                    x.Place.DisplayName,
+                    x.Place.Description,
+                    x.Place.Latitude,
+                    x.Place.Longitude,
+                    x.Place.DataSize,
+                    new AudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, x.Place.AudioAsset.AssetFileUrl),
+                    new List<ImageAssetModel>(x.Place.ImageAssets.Select(y => new ImageAssetModel(y.ImageAssetId, y.Name, y.Description, y.AssetFileUrl, y.PointOfDisplayingStart))))),
+                dbTour.GrossPrice));
+
+            return new JsonResult(dtoTours);
         }
 
         // GET api/tour/5
         [HttpGet("{id}")]
-        public JsonResult Get(int id)
+        public async Task<JsonResult> Get(int id)
         {
-            return new JsonResult(_dbContext.Tours.FirstOrDefault(x => x.TourId == id));
+            var dtoTour = await GetDtoTourModelByIdAsync(id);
+            if (dtoTour == null)
+                return new JsonResult(dtoTour) { StatusCode = StatusCodes.Status404NotFound };
+
+            return new JsonResult(dtoTour);
         }
 
         // POST api/tour
         [HttpPost]
         public async Task<JsonResult> Post(IFormFile formFile)
         {
+            TourModel addedTourDto;
+
+            if (!formFile.FileName.Contains("zip"))
+                return new JsonResult("The tour archive file should have .zip type") { StatusCode = StatusCodes.Status400BadRequest };
+
             var tempDirectoryPath = Path.Combine(ApplicationConstants.TempDirectoryPath, Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDirectoryPath);
 
-            if (!formFile.FileName.Contains("zip"))
-                return new JsonResult("The tour archive file should have .zip type") { StatusCode = 400 };
+            var permanentDirectoriesPaths = new List<string>();
 
             try
             {
+                //Unzip files to temporary directory
                 using (var zip = new ZipArchive(formFile.OpenReadStream()))
                 {
                     var validEntries = zip.Entries.Where(x => ApplicationConstants.FileNameRegex.IsMatch(x.Name));
@@ -66,8 +105,9 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 var tempFiles = Directory.GetFiles(tempDirectoryPath);
 
                 if (!tempFiles.Any(x => x.Contains("config.json")))
-                    return new JsonResult("config.json not found") { StatusCode = 400 };
+                    return new JsonResult("config.json not found") { StatusCode = StatusCodes.Status400BadRequest };
 
+                //read tour config and valid critical fields
                 var configJson = await System.IO.File.ReadAllTextAsync(tempFiles.First(x => x.Contains("config.json")));
                 var config = JsonConvert.DeserializeObject<AddNewTourZipConfig>(configJson);
 
@@ -104,11 +144,13 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 }
 
                 if (validationErrorMessages.Any())
-                    return new JsonResult(validationErrorMessages) { StatusCode = 400 };
+                    return new JsonResult(validationErrorMessages) { StatusCode = StatusCodes.Status400BadRequest };
 
+                //create permanent directory for tour assets and copy assets
                 var tourAssetsFolderGuid = Guid.NewGuid().ToString();
                 var tourAssetsDirectoryPath = Path.Combine(ApplicationConstants.ToursAssetsDirectoryPath, $"{config.CountryName}_{config.Name}_{tourAssetsFolderGuid}");
                 Directory.CreateDirectory(tourAssetsDirectoryPath);
+                permanentDirectoriesPaths.Add(tourAssetsDirectoryPath);
 
                 string CopyAssetTo(string assetFileName, string targetDirectoryPath)
                 {
@@ -123,13 +165,14 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     var assetFilePath = Path.Combine(targetDirectoryPath, tempFileName);
                     System.IO.File.Copy(tempFilePath, assetFilePath);
 
-                    return assetFilePath.Substring(assetFilePath.LastIndexOf("wwwroot", StringComparison.Ordinal) + 1);
+                    return assetFilePath.Substring(assetFilePath.IndexOf("wwwroot", StringComparison.Ordinal) + 8);
                 }
 
                 string tourLogoFileUrl = CopyAssetTo(config.LogoFileName, tourAssetsDirectoryPath);
                 if (string.IsNullOrEmpty(tourLogoFileUrl))
-                    return new JsonResult(null) { StatusCode = 500 };
+                    return new JsonResult(null) { StatusCode = StatusCodes.Status500InternalServerError };
 
+                //add tour places to database and copy place assets to place assets directory
                 var dbPlaces = new List<Place>();
 
                 foreach (var place in config.Places)
@@ -137,6 +180,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     var placeAssetsFolderGuid = Guid.NewGuid().ToString();
                     var placeAssetsDirectoryPath = Path.Combine(ApplicationConstants.PlacesAssetsDirectoryPath, $"{config.CountryName}_{place.Name}_{tourAssetsFolderGuid}");
                     Directory.CreateDirectory(placeAssetsDirectoryPath);
+                    permanentDirectoriesPaths.Add(placeAssetsDirectoryPath);
 
                     var dbPlace = new Place()
                     {
@@ -144,7 +188,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
                         Description = place.Description,
                         Latitude = place.Latitude,
                         Longitude = place.Longitude,
-                        DisplayName = place.DisplayName
+                        DisplayName = place.DisplayName,
+                        AssetsFolderGuid = placeAssetsFolderGuid
                     };
                     await _dbContext.Places.AddAsync(dbPlace);
                     await _dbContext.SaveChangesAsync();
@@ -206,29 +251,82 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 await _dbContext.Tours.AddAsync(dbTour);
                 await _dbContext.SaveChangesAsync();
 
-                foreach (var dbPlace in dbPlaces)
+                var places = await _dbContext.Places.Where(x => dbPlaces.Any(y => y.PlaceId == x.PlaceId)).Include(x => x.TourPlaces).ToListAsync();
+                foreach (var place in places)
                 {
-                    dbPlace.TourPlaces.Add(new TourPlace() { TourId = dbTour.TourId, PlaceId = dbPlace.PlaceId });
+                    place.TourPlaces.Add(new TourPlace() { TourId = dbTour.TourId, PlaceId = place.PlaceId });
                 }
                 await _dbContext.SaveChangesAsync();
+
+                addedTourDto = await GetDtoTourModelByIdAsync(dbTour.TourId);
             }
             catch (Exception ex)
             {
-                return new JsonResult(ex) { StatusCode = 500 };
+                foreach (var path in permanentDirectoriesPaths)
+                {
+                    Directory.Delete(path, true);
+                }
+
+                return new JsonResult(ex) { StatusCode = StatusCodes.Status500InternalServerError };
             }
             finally
             {
                 Directory.Delete(tempDirectoryPath, true);
             }
 
-            return new JsonResult(null);
+            return new JsonResult(addedTourDto) { StatusCode = StatusCodes.Status201Created };
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
+            var tourToRemove = await _dbContext.Tours.FindAsync(id);
+            if (tourToRemove == null)
+                return new JsonResult(null) { StatusCode = StatusCodes.Status404NotFound };
+
+            //TO DO: add delete related assets
+
+            _dbContext.Tours.Remove(tourToRemove);
+            await _dbContext.SaveChangesAsync();
+
             
+
+            return new JsonResult("Tour has been removed successfully");
+        }
+
+        private async Task<TourModel> GetDtoTourModelByIdAsync(long tourId)
+        {
+            var dbTour = await _dbContext.Tours
+                .Include(t => t.TourPlaces)
+                    .ThenInclude(tp => tp.Place.AudioAsset)
+                .Include(t => t.TourPlaces)
+                    .ThenInclude(tp => tp.Place.ImageAssets)
+                .Where(t => t.TourId == tourId)
+                .FirstOrDefaultAsync();
+
+            if (dbTour == null)
+                return null;
+
+            return new TourModel(
+                dbTour.TourId,
+                dbTour.Name,
+                dbTour.Description,
+                dbTour.EstimatedDuration,
+                dbTour.CountryName,
+                dbTour.DataSize,
+                dbTour.LogoUrl,
+                dbTour.TourPlaces?.Select(x => new PlaceModel(
+                    x.Place.PlaceId,
+                    x.Place.Name,
+                    x.Place.DisplayName,
+                    x.Place.Description,
+                    x.Place.Latitude,
+                    x.Place.Longitude,
+                    x.Place.DataSize,
+                    new AudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, x.Place.AudioAsset.AssetFileUrl),
+                    new List<ImageAssetModel>(x.Place.ImageAssets.Select(y => new ImageAssetModel(y.ImageAssetId, y.Name, y.Description, y.AssetFileUrl, y.PointOfDisplayingStart))))),
+                dbTour.GrossPrice);
         }
     }
 }

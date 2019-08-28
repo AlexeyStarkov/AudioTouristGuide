@@ -10,7 +10,7 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Models\" />
-    <Folder Include="Models\Tours\" />
+    <Folder Include="Models\Tour\" />
     <Folder Include="Models\AddNewTourZip\" />
   </ItemGroup>
 </Project>
