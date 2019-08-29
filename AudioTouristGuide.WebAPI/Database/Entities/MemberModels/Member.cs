@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
 using AudioTouristGuide.WebAPI.Database.Enums;
-using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 
-namespace AudioTouristGuide.WebAPI.Database.MemberModels
+namespace AudioTouristGuide.WebAPI.Database.Entities.MemberModels
 {
     public class Member
     {

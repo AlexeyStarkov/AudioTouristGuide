@@ -1,4 +1,6 @@
 ﻿using AudioTouristGuide.WebAPI.Database;
+using AudioTouristGuide.WebAPI.Database.Interfaces;
+using AudioTouristGuide.WebAPI.Database.Repositories;
 using AudioTouristGuide.WebAPI.SwaggerTools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +35,8 @@ namespace AudioTouristGuide.WebAPI
                 });
 
                 services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Development")));
+
+                services.AddTransient<ITourRepository, TourRepository>();
             }
             catch (System.Exception ex)
             {

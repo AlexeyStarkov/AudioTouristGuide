@@ -7,13 +7,17 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
     <Folder Include="Database\" />
-    <Folder Include="Database\MemberModels\" />
-    <Folder Include="Database\TourModels\" />
     <Folder Include="Database\Enums\" />
-    <Folder Include="Database\JoinTablesModels\" />
     <Folder Include="SwaggerTools\" />
     <Folder Include="Tools\" />
-    <Folder Include="DTO\" />
+    <Folder Include="Database\Interfaces\" />
+    <Folder Include="Database\Repositories\" />
+    <Folder Include="Database\Entities\" />
+    <Folder Include="Database\Entities\JoinTablesModels\" />
+    <Folder Include="Database\Entities\MemberModels\" />
+    <Folder Include="Database\Entities\TourModels\" />
+    <Folder Include="Services\" />
+    <Folder Include="Database\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

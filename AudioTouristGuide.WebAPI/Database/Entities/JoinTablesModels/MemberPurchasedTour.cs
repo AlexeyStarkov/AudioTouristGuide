@@ -1,7 +1,7 @@
 ﻿using AudioTouristGuide.WebAPI.Database.MemberModels;
 using AudioTouristGuide.WebAPI.Database.TourModels;
 
-namespace AudioTouristGuide.WebAPI.Database.JoinTablesModels
+namespace AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels
 {
     public class MemberPurchasedTour
     {

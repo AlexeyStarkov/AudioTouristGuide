@@ -1,4 +1,4 @@
-﻿namespace AudioTouristGuide.WebAPI.Database.TourModels
+﻿namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
 {
     public abstract class AssetBase
     {

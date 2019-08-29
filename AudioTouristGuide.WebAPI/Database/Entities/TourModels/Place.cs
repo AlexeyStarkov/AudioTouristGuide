@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
+using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
 
-namespace AudioTouristGuide.WebAPI.Database.TourModels
+namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
 {
     public class Place
     {

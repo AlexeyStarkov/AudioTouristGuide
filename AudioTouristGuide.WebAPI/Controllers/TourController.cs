@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -8,8 +7,9 @@ using System.Threading.Tasks;
 using AudioTouristGuide.DTO.Models.AddNewTourZip;
 using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.WebAPI.Database;
-using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
-using AudioTouristGuide.WebAPI.Database.TourModels;
+using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
+using AudioTouristGuide.WebAPI.Database.Entities.TourModels;
+using AudioTouristGuide.WebAPI.Services;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +23,11 @@ namespace AudioTouristGuide.WebAPI.Controllers
     [Route("api/[controller]")]
     public class TourController : Controller
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly ToursDataService _toursDataService;
 
-        public TourController(DatabaseContext dbContext)
+        public TourController(ToursDataService toursDataService)
         {
-            _dbContext = dbContext;
+            _toursDataService = toursDataService;
         }
 
         // GET: api/tour
@@ -68,7 +68,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<JsonResult> Get(int id)
         {
-            var dtoTour = await GetDtoTourModelByIdAsync(id);
+            var dbTour = await _toursDataService.GetFullTourDataByIdAsync(id);
+            var dtoTour = dbTour.ToDTO();
             if (dtoTour == null)
                 return new JsonResult(dtoTour) { StatusCode = StatusCodes.Status404NotFound };
 
@@ -293,40 +294,6 @@ namespace AudioTouristGuide.WebAPI.Controllers
             
 
             return new JsonResult("Tour has been removed successfully");
-        }
-
-        private async Task<TourModel> GetDtoTourModelByIdAsync(long tourId)
-        {
-            var dbTour = await _dbContext.Tours
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.AudioAsset)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets)
-                .Where(t => t.TourId == tourId)
-                .FirstOrDefaultAsync();
-
-            if (dbTour == null)
-                return null;
-
-            return new TourModel(
-                dbTour.TourId,
-                dbTour.Name,
-                dbTour.Description,
-                dbTour.EstimatedDuration,
-                dbTour.CountryName,
-                dbTour.DataSize,
-                dbTour.LogoUrl,
-                dbTour.TourPlaces?.Select(x => new PlaceModel(
-                    x.Place.PlaceId,
-                    x.Place.Name,
-                    x.Place.DisplayName,
-                    x.Place.Description,
-                    x.Place.Latitude,
-                    x.Place.Longitude,
-                    x.Place.DataSize,
-                    new AudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, x.Place.AudioAsset.AssetFileUrl),
-                    new List<ImageAssetModel>(x.Place.ImageAssets.Select(y => new ImageAssetModel(y.ImageAssetId, y.Name, y.Description, y.AssetFileUrl, y.PointOfDisplayingStart))))),
-                dbTour.GrossPrice);
         }
     }
 }
