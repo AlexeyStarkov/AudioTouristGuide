@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Threading.Tasks;
-using AudioTouristGuide.DTO.Models.AddNewTourZip;
+﻿using AudioTouristGuide.DTO.Models.AddNewTourZip;
 using AudioTouristGuide.DTO.Models.Tour;
-using AudioTouristGuide.WebAPI.Database;
 using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
 using AudioTouristGuide.WebAPI.Database.Entities.TourModels;
-using AudioTouristGuide.WebAPI.Services;
+using AudioTouristGuide.WebAPI.Database.Interfaces;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,23 +22,18 @@ namespace AudioTouristGuide.WebAPI.Controllers
     [Route("api/[controller]")]
     public class TourController : Controller
     {
-        private readonly ToursDataService _toursDataService;
+        private readonly ITourRepository _tourRepository;
 
-        public TourController(ToursDataService toursDataService)
+        public TourController(ITourRepository tourRepository)
         {
-            _toursDataService = toursDataService;
+            _tourRepository = tourRepository;
         }
 
         // GET: api/tour
         [HttpGet]
         public async Task<JsonResult> Get()
         {
-            var dbTours = await _dbContext.Tours
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.AudioAsset)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets)
-                .ToListAsync();
+            var dbTours = await _tourRepository.GetAllFullToursData();
 
             var dtoTours = dbTours.Select(dbTour => new TourModel(
                 dbTour.TourId,
@@ -68,8 +62,27 @@ namespace AudioTouristGuide.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<JsonResult> Get(int id)
         {
-            var dbTour = await _toursDataService.GetFullTourDataByIdAsync(id);
-            var dtoTour = dbTour.ToDTO();
+            var dbTour = await _tourRepository.GetFullTourDataByIdAsync(id);
+            var dtoTour = new TourModel(
+                dbTour.TourId,
+                dbTour.Name,
+                dbTour.Description,
+                dbTour.EstimatedDuration,
+                dbTour.CountryName,
+                dbTour.DataSize,
+                dbTour.LogoUrl,
+                dbTour.TourPlaces?.Select(x => new PlaceModel(
+                    x.Place.PlaceId,
+                    x.Place.Name,
+                    x.Place.DisplayName,
+                    x.Place.Description,
+                    x.Place.Latitude,
+                    x.Place.Longitude,
+                    x.Place.DataSize,
+                    new AudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, x.Place.AudioAsset.AssetFileUrl),
+                    new List<ImageAssetModel>(x.Place.ImageAssets.Select(y => new ImageAssetModel(y.ImageAssetId, y.Name, y.Description, y.AssetFileUrl, y.PointOfDisplayingStart))))),
+                dbTour.GrossPrice);
+
             if (dtoTour == null)
                 return new JsonResult(dtoTour) { StatusCode = StatusCodes.Status404NotFound };
 

@@ -1,6 +1,6 @@
-﻿using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
-using AudioTouristGuide.WebAPI.Database.MemberModels;
-using AudioTouristGuide.WebAPI.Database.TourModels;
+﻿using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
+using AudioTouristGuide.WebAPI.Database.Entities.MemberModels;
+using AudioTouristGuide.WebAPI.Database.Entities.TourModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AudioTouristGuide.WebAPI.Database

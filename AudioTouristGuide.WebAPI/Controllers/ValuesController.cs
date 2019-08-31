@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AudioTouristGuide.DTO.Models.AddNewTourZip;
-using AudioTouristGuide.WebAPI.Database;
-using AudioTouristGuide.WebAPI.Database.JoinTablesModels;
-using AudioTouristGuide.WebAPI.Database.TourModels;
+﻿using AudioTouristGuide.WebAPI.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Controllers
 {

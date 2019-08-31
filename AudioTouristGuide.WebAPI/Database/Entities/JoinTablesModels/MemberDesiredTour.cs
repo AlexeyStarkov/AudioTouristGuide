@@ -1,5 +1,5 @@
-﻿using AudioTouristGuide.WebAPI.Database.MemberModels;
-using AudioTouristGuide.WebAPI.Database.TourModels;
+﻿using AudioTouristGuide.WebAPI.Database.Entities.MemberModels;
+using AudioTouristGuide.WebAPI.Database.Entities.TourModels;
 
 namespace AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels
 {
