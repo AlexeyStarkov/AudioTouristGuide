@@ -36,7 +36,10 @@ namespace AudioTouristGuide.WebAPI
 
                 services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Development")));
 
-                services.AddTransient<ITourRepository, TourRepository>();
+                services.AddTransient<IToursRepository, ToursRepository>();
+                services.AddTransient<IPlacesRepository, PlacesRepository>();
+                services.AddTransient<IAudioAssetsRepository, AudioAssetsRepository>();
+                services.AddTransient<IImageAssetsRepository, ImageAssetsRepository>();
             }
             catch (System.Exception ex)
             {

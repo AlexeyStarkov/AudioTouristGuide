@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using AudioTouristGuide.WebAPI.Database.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using AudioTouristGuide.WebAPI.Database.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Database.Repositories
 {
@@ -13,16 +13,6 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
         protected RepositoryBase(DatabaseContext dbContext)
         {
             DBContext = dbContext;
-        }
-
-        public IQueryable<T> FindAll()
-        {
-            return DBContext.Set<T>().AsNoTracking();
-        }
-
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
-        {
-            return DBContext.Set<T>().Where(expression).AsNoTracking();
         }
 
         public void Create(T entity)
@@ -39,5 +29,13 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
         {
             DBContext.Set<T>().Remove(entity);
         }
+
+        public async Task<int> SaveChangesAsync() => await DBContext.SaveChangesAsync();
+
+        public abstract Task<T> GetByIdAsync(long id);
+
+        public abstract Task<IEnumerable<T>> GetAllAsync();
+
+        public abstract Task<IEnumerable<T>> GetByCondition(Expression<Func<T, bool>> expression);
     }
 }
