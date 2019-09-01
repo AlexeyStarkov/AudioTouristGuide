@@ -6,12 +6,8 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <Folder Include="Database\" />
     <Folder Include="Database\Enums\" />
-    <Folder Include="SwaggerTools\" />
     <Folder Include="Tools\" />
-    <Folder Include="Database\Interfaces\" />
-    <Folder Include="Database\Repositories\" />
     <Folder Include="Database\Entities\" />
     <Folder Include="Database\Entities\JoinTablesModels\" />
     <Folder Include="Database\Entities\MemberModels\" />
