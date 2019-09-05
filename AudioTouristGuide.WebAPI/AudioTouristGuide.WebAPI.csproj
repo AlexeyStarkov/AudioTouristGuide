@@ -13,6 +13,7 @@
     <Folder Include="Database\Entities\MemberModels\" />
     <Folder Include="Database\Entities\TourModels\" />
     <Folder Include="Services\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>

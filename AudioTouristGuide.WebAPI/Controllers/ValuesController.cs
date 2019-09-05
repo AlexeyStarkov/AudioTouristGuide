@@ -1,6 +1,9 @@
 ﻿using AudioTouristGuide.WebAPI.Database;
+using AudioTouristGuide.WebAPI.Services.Interfaces;
+using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Controllers
@@ -9,29 +12,23 @@ namespace AudioTouristGuide.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly IBlobStorageService _blobStorageService;
 
-        public ValuesController(DatabaseContext dbContext)
+        public ValuesController(IBlobStorageService blobStorageService)
         {
-            _dbContext = dbContext;
+            _blobStorageService = blobStorageService;
         }
 
         // GET api/values
         [HttpGet]
         public async Task<JsonResult> Get()
         {
-            //await _dbContext.Places.AddAsync(
-            //    new Place()
-            //    {
-            //        Name = "TestPlace",
-            //        Description = "Privet"
-            //    });
-            //await _dbContext.SaveChangesAsync();
+            //string filePath = Path.Combine(ApplicationConstants.TempDirectoryPath, "testImage.jpg");
+            //await _blobStorageService.UploadFileAsync("TestContainer", filePath);
 
-            //var places = _dbContext.Places.ToList();
+            var url = _blobStorageService.GetFileUrlAsync("tttt", "d.jpg");
 
-
-            return new JsonResult(null);
+            return new JsonResult(url);
         }
 
         // GET api/values/5
