@@ -14,6 +14,9 @@
     <Folder Include="Database\Entities\TourModels\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
+    <Folder Include="Storage\" />
+    <Folder Include="Storage\Models\" />
+    <Folder Include="Tools\DTOConverters\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,7 @@ using AudioTouristGuide.WebAPI.Database.Repositories;
 using AudioTouristGuide.WebAPI.Services;
 using AudioTouristGuide.WebAPI.Services.Interfaces;
 using AudioTouristGuide.WebAPI.SwaggerTools;
+using AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,12 +40,14 @@ namespace AudioTouristGuide.WebAPI
 
                 services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Development")));
                 services.Configure<AzureBlobStorageConfig>(Configuration.GetSection("AzureBlobStorageConfig"));
+                services.AddTransient<TourDTOConverters>();
 
                 services.AddTransient<IBlobStorageService, BlobStorageService>();
                 services.AddTransient<IToursRepository, ToursRepository>();
                 services.AddTransient<IPlacesRepository, PlacesRepository>();
                 services.AddTransient<IAudioAssetsRepository, AudioAssetsRepository>();
                 services.AddTransient<IImageAssetsRepository, ImageAssetsRepository>();
+               
             }
             catch (System.Exception ex)
             {

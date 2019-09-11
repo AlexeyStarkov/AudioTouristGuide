@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AudioTouristGuide.DTO.Models.Tour
 {
-    public class PlaceModel
+    public class DTOPlaceModel
     {
         public long PlaceId { get; }
         public string Name { get; }
@@ -13,10 +12,10 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public double Longitude { get; }
         public long DataSize { get; }
 
-        public AudioAssetModel AudioAsset { get; }
-        public IEnumerable<ImageAssetModel> ImageAssets { get; }
+        public DTOAudioAssetModel AudioAsset { get; }
+        public IEnumerable<DTOImageAssetModel> ImageAssets { get; }
 
-        public PlaceModel(long placeId, string name, string displayName, string description, double latitude, double longitude, long dataSize, AudioAssetModel audioAsset, IEnumerable<ImageAssetModel> imageAssets)
+        public DTOPlaceModel(long placeId, string name, string displayName, string description, double latitude, double longitude, long dataSize, DTOAudioAssetModel audioAsset, IEnumerable<DTOImageAssetModel> imageAssets)
         {
             PlaceId = placeId;
             Name = name;

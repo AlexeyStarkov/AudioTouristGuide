@@ -11,14 +11,15 @@ namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long TourId { get; set; }
-        public string AssetsFolderGuid { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
         public long DataSize { get; set; }
         public decimal? GrossPrice { get; set; }
-        public string LogoUrl { get; set; }
+
+        public string AssetsContainerName { get; set; }
+        public string LogoFileName { get; set; }
 
         public ICollection<TourPlace> TourPlaces { get; set; }
         public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }

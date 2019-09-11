@@ -4,6 +4,7 @@
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string AssetFileUrl { get; set; }
+        public string AssetContainerName { get; set; }
+        public string AssetFileName { get; set; }
     }
 }

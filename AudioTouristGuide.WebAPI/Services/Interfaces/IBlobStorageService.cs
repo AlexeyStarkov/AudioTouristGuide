@@ -1,11 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using AudioTouristGuide.WebAPI.Storage.Models;
 
 namespace AudioTouristGuide.WebAPI.Services.Interfaces
 {
     public interface IBlobStorageService
     {
         Task<bool> UploadFileAsync(string containerName, string filePath);
-        string GetFileUrlAsync(string containerName, string fileName);
+        string GetFileUrl(string containerName, string fileName);
+        Task RemoveContainerAsync(string containerName);
+        BlobContainerInfo GetBlobContainerInfo(string containerName);
     }
 }

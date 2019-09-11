@@ -10,7 +10,7 @@ namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long PlaceId { get; set; }
-        public string AssetsFolderGuid { get; set; }
+        public string AssetsContainerName { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AudioTouristGuide.DTO.Models.Tour
 {
-    public class TourModel
+    public class DTOTourModel
     {
         public long TourId { get; }
         public string Name { get; }
@@ -14,9 +14,9 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public decimal? GrossPrice { get; }
         public string LogoUrl { get; }
 
-        public IEnumerable<PlaceModel> Places { get; }
+        public IEnumerable<DTOPlaceModel> Places { get; }
 
-        public TourModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, IEnumerable<PlaceModel> places, decimal? grossPrice = null)
+        public DTOTourModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, IEnumerable<DTOPlaceModel> places, decimal? grossPrice = null)
         {
             TourId = tourId;
             Name = name;
