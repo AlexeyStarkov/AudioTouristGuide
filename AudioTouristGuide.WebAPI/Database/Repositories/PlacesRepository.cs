@@ -17,7 +17,7 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
 
         public override async Task<IEnumerable<Place>> GetAllAsync()
         {
-            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.ImageAssets).ToListAsync();
+            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.ImageAssets).Include(x => x.TourPlaces).ToListAsync();
         }
 
         public override async Task<IEnumerable<Place>> GetByCondition(Expression<Func<Place, bool>> expression)

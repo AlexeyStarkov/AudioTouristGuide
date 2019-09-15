@@ -12,118 +12,90 @@ namespace AudioTouristGuide.WebAPI.Services
     public class BlobStorageService : IBlobStorageService
     {
         private readonly AzureBlobStorageConfig _blobStorageConfig;
+        private readonly CloudBlobClient _cloudBlobClient;
 
         public BlobStorageService(IOptions<AzureBlobStorageConfig> blobStorageConfig)
         {
             _blobStorageConfig = blobStorageConfig.Value;
+            CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount);
+            _cloudBlobClient = storageAccount?.CreateCloudBlobClient();
+
         }
 
-        public async Task<bool> UploadFileAsync(string containerName, string filePath)
+        public async Task<FileUploadResult> UploadFileAsync(string containerName, string filePath, string fileName)
         {
-            if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(filePath))
-                return false;
+            if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(filePath) || _cloudBlobClient == null)
+                return new FileUploadResult(false, fileName);
 
-            if (CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount))
-            {
-                var blobClient = storageAccount.CreateCloudBlobClient();
-                if (blobClient == null)
-                    return false;
+            var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
+            await container.CreateIfNotExistsAsync();
 
-                var container = blobClient.GetContainerReference(containerName.ToLower());
-                
-                if (await container.CreateIfNotExistsAsync())
-                {
-                    await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Blob });
+            await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Blob });
 
-                    string fileName = filePath.Split('/').Last();
-                    var cloudBlockBlob = container.GetBlockBlobReference(fileName);
-                    if (cloudBlockBlob == null)
-                        return false;
+            var cloudBlockBlob = container.GetBlockBlobReference(fileName);
+            if (cloudBlockBlob == null)
+                return new FileUploadResult(false, fileName);
 
-                    await cloudBlockBlob.UploadFromFileAsync(filePath);
-                }
-                return false;
-            }
-            return false;
+            await cloudBlockBlob.UploadFromFileAsync(filePath);
+            return new FileUploadResult(true, fileName);
         }
 
         public string GetFileUrl(string containerName, string fileName)
         {
-            if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(fileName) || _cloudBlobClient == null)
                 return null;
 
-            if (CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount))
-            {
-                var blobClient = storageAccount.CreateCloudBlobClient();
-                if (blobClient == null)
-                    return null;
-                var container = blobClient.GetContainerReference(containerName.ToLower());
+            var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
 
-                var cloudBlockBlob = container.GetBlockBlobReference(fileName);
-                return cloudBlockBlob.SnapshotQualifiedUri.AbsoluteUri;
-            }
-            return null;
+            var cloudBlockBlob = container.GetBlockBlobReference(fileName);
+            return cloudBlockBlob.SnapshotQualifiedUri.AbsoluteUri;
         }
 
         public async Task RemoveContainerAsync(string containerName)
         {
-            if (!string.IsNullOrEmpty(containerName))
+            if (!string.IsNullOrEmpty(containerName) || _cloudBlobClient == null)
             {
-                if (CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount))
-                {
-                    var blobClient = storageAccount.CreateCloudBlobClient();
-                    if (blobClient != null)
-                    {
-                        var container = blobClient.GetContainerReference(containerName.ToLower());
-                        await container.DeleteAsync();
-                    }
-                }
+                var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
+                await container.DeleteAsync();
             }
         }
 
         public BlobContainerInfo GetBlobContainerInfo(string containerName)
         {
-            if (string.IsNullOrEmpty(containerName))
+            if (string.IsNullOrEmpty(containerName) || _cloudBlobClient == null)
                 return null;
 
-            if (CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount))
+            var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
+            var containerInfo = new BlobContainerInfo()
             {
-                var blobClient = storageAccount.CreateCloudBlobClient();
-                if (blobClient == null)
-                    return null;
-                var container = blobClient.GetContainerReference(containerName.ToLower());
-                var containerInfo = new BlobContainerInfo()
+                FileCount = 0,
+                DirectoryCount = 0,
+                TotalBytes = 0
+            };
+
+            foreach (var blobItem in container.ListBlobs(null, true, BlobListingDetails.None))
+            {
+                if (blobItem is CloudBlockBlob)
                 {
-                    FileCount = 0,
-                    DirectoryCount = 0,
-                    TotalBytes = 0
-                };
-
-                foreach (IListBlobItem blobItem in container.ListBlobs(null, true, BlobListingDetails.None))
-                {
-                    if (blobItem is CloudBlockBlob)
-                    {
-                        CloudBlockBlob blob = blobItem as CloudBlockBlob;
-                        containerInfo.FileCount++;
-                        containerInfo.TotalBytes += blob.Properties.Length;
-                    }
-                    else if (blobItem is CloudPageBlob)
-                    {
-                        CloudPageBlob pageBlob = blobItem as CloudPageBlob;
-
-                        containerInfo.FileCount++;
-                        containerInfo.TotalBytes += pageBlob.Properties.Length;
-                    }
-                    else if (blobItem is CloudBlobDirectory)
-                    {
-                        CloudBlobDirectory directory = blobItem as CloudBlobDirectory;
-
-                        containerInfo.DirectoryCount++;
-                    }
+                    CloudBlockBlob blob = blobItem as CloudBlockBlob;
+                    containerInfo.FileCount++;
+                    containerInfo.TotalBytes += blob.Properties.Length;
                 }
-                return containerInfo;
+                else if (blobItem is CloudPageBlob)
+                {
+                    CloudPageBlob pageBlob = blobItem as CloudPageBlob;
+
+                    containerInfo.FileCount++;
+                    containerInfo.TotalBytes += pageBlob.Properties.Length;
+                }
+                else if (blobItem is CloudBlobDirectory)
+                {
+                    CloudBlobDirectory directory = blobItem as CloudBlobDirectory;
+
+                    containerInfo.DirectoryCount++;
+                }
             }
-            return null;
+            return containerInfo;
         }
     }
 }

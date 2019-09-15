@@ -4,6 +4,7 @@ using AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels;
 using AudioTouristGuide.WebAPI.Database.Entities.TourModels;
 using AudioTouristGuide.WebAPI.Database.Interfaces;
 using AudioTouristGuide.WebAPI.Services.Interfaces;
+using AudioTouristGuide.WebAPI.Storage.Models;
 using AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters;
 using AudioTouristGuide.WebAPI.Tools;
 using Microsoft.AspNetCore.Http;
@@ -138,25 +139,25 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
                 //upload tour assets to azure blob storage
                 var tourAssetsContainerGuid = Guid.NewGuid().ToString();
-                var tourAssetsContainerName = $"{config.CountryName}_{config.Name}_{tourAssetsContainerGuid}";
+                var tourAssetsContainerName = $"{config.CountryName}-{config.Name}-{tourAssetsContainerGuid}";
                 var tourLogoFileName = config.LogoFileName;
                 containersNames.Add(tourAssetsContainerName);
 
-                async Task<bool> UploadAssetTo(string assetFileName, string targetContainerName)
+                async Task<FileUploadResult> UploadAssetToAsync(string assetFileName, string targetContainerName)
                 {
                     var tempFilePath = tempFiles.FirstOrDefault(x => x.Contains(assetFileName));
                     if (tempFilePath == null)
-                        return false;
+                        return new FileUploadResult(false, null);
 
                     var tempFileName = tempFilePath.Split(Path.DirectorySeparatorChar).LastOrDefault();
                     if (tempFileName == null)
-                        return false;
+                        return new FileUploadResult(false, null);
 
-                    return await _blobStorageService.UploadFileAsync(targetContainerName, tempFileName);
+                    return await _blobStorageService.UploadFileAsync(targetContainerName, tempFilePath, tempFileName);
                 }
 
-                var tourAssetsUploadingResult = await UploadAssetTo(tourLogoFileName, tourAssetsContainerName);
-                if (!tourAssetsUploadingResult)
+                var tourAssetsUploadingResult = await UploadAssetToAsync(tourLogoFileName, tourAssetsContainerName);
+                if (!tourAssetsUploadingResult.HasSuccess)
                     return new JsonResult(null) { StatusCode = StatusCodes.Status500InternalServerError };
 
                 //add tour places to database and upload place assets to azure blob storage
@@ -165,7 +166,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 foreach (var place in config.Places)
                 {
                     var placeAssetsContainerGuid = Guid.NewGuid().ToString();
-                    var placeAssetsContainerName = $"{config.CountryName}_{place.Name}_{placeAssetsContainerGuid}";
+                    var placeAssetsContainerName = $"{config.CountryName}-{place.Name}-{placeAssetsContainerGuid}";
                     containersNames.Add(placeAssetsContainerName);
 
                     var dbPlace = new Place()
@@ -181,15 +182,15 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     await _placesRepository.SaveChangesAsync();
 
                     var audioTrackFileName = place.AudioTrack.FileName;
-                    var audioTrackUploadingResult = await UploadAssetTo(audioTrackFileName, placeAssetsContainerName);
-                    if (audioTrackUploadingResult)
+                    var audioTrackUploadingResult = await UploadAssetToAsync(audioTrackFileName, placeAssetsContainerName);
+                    if (audioTrackUploadingResult.HasSuccess)
                     {
                         var dbAudioAsset = new AudioAsset()
                         {
                             Name = place.AudioTrack.Name,
                             Description = place.AudioTrack.Description,
                             AssetContainerName = placeAssetsContainerName,
-                            AssetFileName = audioTrackFileName,
+                            AssetFileName = audioTrackUploadingResult.FileName,
                             PlaceId = dbPlace.PlaceId
                         };
                         _audioAssetsRepository.Create(dbAudioAsset);
@@ -199,8 +200,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     foreach (var image in place.Images)
                     {
                         var imageFileName = image.FileName;
-                        var imageUploadingResult = await UploadAssetTo(imageFileName, placeAssetsContainerName);
-                        if (imageUploadingResult)
+                        var imageUploadingResult = await UploadAssetToAsync(imageFileName, placeAssetsContainerName);
+                        if (imageUploadingResult.HasSuccess)
                         {
                             var dbImageAsset = new ImageAsset()
                             {
@@ -208,7 +209,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                                 Description = image.Description,
                                 PointOfDisplayingStart = image.PointOfDisplayingStart,
                                 AssetContainerName = placeAssetsContainerName,
-                                AssetFileName = imageFileName,
+                                AssetFileName = imageUploadingResult.FileName,
                                 Place = dbPlace
                             };
                             _imageAssetsRepository.Create(dbImageAsset);
@@ -237,7 +238,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     GrossPrice = config.GrossPrice,
                     DataSize = tourAssetsSize,
                     AssetsContainerName = tourAssetsContainerName,
-                    LogoFileName = tourLogoFileName
+                    LogoFileName = tourAssetsUploadingResult.FileName
                 };
                 _tourRepository.Create(dbTour);
                 await _tourRepository.SaveChangesAsync();
