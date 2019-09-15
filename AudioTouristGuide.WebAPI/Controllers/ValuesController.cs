@@ -26,7 +26,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             //string filePath = Path.Combine(ApplicationConstants.TempDirectoryPath, "testImage.jpg");
             //await _blobStorageService.UploadFileAsync("TestContainer", filePath);
 
-            var url = _blobStorageService.GetFileUrl("tttt", "d.jpg");
+            var url = _blobStorageService.GetFileTokenizedUrl("tttt", "d.jpg");
 
             return new JsonResult(url);
         }

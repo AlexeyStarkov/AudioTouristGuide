@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AudioTouristGuide.WebAPI.Services.Interfaces;
 using AudioTouristGuide.WebAPI.Storage.Models;
@@ -30,7 +31,7 @@ namespace AudioTouristGuide.WebAPI.Services
             var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
             await container.CreateIfNotExistsAsync();
 
-            await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Blob });
+            await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Off });
 
             var cloudBlockBlob = container.GetBlockBlobReference(fileName);
             if (cloudBlockBlob == null)
@@ -40,7 +41,7 @@ namespace AudioTouristGuide.WebAPI.Services
             return new FileUploadResult(true, fileName);
         }
 
-        public string GetFileUrl(string containerName, string fileName)
+        public string GetFileTokenizedUrl(string containerName, string fileName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(fileName) || _cloudBlobClient == null)
                 return null;
@@ -48,7 +49,15 @@ namespace AudioTouristGuide.WebAPI.Services
             var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
 
             var cloudBlockBlob = container.GetBlockBlobReference(fileName);
-            return cloudBlockBlob.SnapshotQualifiedUri.AbsoluteUri;
+
+            var storedPolicy = new SharedAccessBlobPolicy()
+            {
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(2),
+                Permissions = SharedAccessBlobPermissions.Read
+            };
+            string accessSignature = cloudBlockBlob.GetSharedAccessSignature(storedPolicy);
+
+            return cloudBlockBlob.SnapshotQualifiedUri.AbsoluteUri + accessSignature;
         }
 
         public async Task RemoveContainerAsync(string containerName)
