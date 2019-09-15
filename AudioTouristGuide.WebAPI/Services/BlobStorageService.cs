@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AudioTouristGuide.WebAPI.Services.Interfaces;
 using AudioTouristGuide.WebAPI.Storage.Models;
