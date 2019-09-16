@@ -138,8 +138,9 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     return new JsonResult(validationErrorMessages) { StatusCode = StatusCodes.Status400BadRequest };
 
                 //upload tour assets to azure blob storage
-                var tourAssetsContainerGuid = Guid.NewGuid().ToString();
-                var tourAssetsContainerName = $"{config.CountryName}-{config.Name}-{tourAssetsContainerGuid}";
+                var tourAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-",string.Empty);
+                var tourAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{config.Name.Replace(" ", string.Empty)}-{tourAssetsContainerGuid}";
+                tourAssetsContainerName = tourAssetsContainerName.Length > 62 ? tourAssetsContainerName.Substring(0, 62) : tourAssetsContainerName;
                 var tourLogoFileName = config.LogoFileName;
                 containersNames.Add(tourAssetsContainerName);
 
@@ -147,11 +148,11 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 {
                     var tempFilePath = tempFiles.FirstOrDefault(x => x.Contains(assetFileName));
                     if (tempFilePath == null)
-                        return new FileUploadResult(false, null);
+                        return new FileUploadResult(false, null, null);
 
                     var tempFileName = tempFilePath.Split(Path.DirectorySeparatorChar).LastOrDefault();
                     if (tempFileName == null)
-                        return new FileUploadResult(false, null);
+                        return new FileUploadResult(false, null, null);
 
                     return await _blobStorageService.UploadFileAsync(targetContainerName, tempFilePath, tempFileName);
                 }
@@ -165,8 +166,9 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
                 foreach (var place in config.Places)
                 {
-                    var placeAssetsContainerGuid = Guid.NewGuid().ToString();
-                    var placeAssetsContainerName = $"{config.CountryName}-{place.Name}-{placeAssetsContainerGuid}";
+                    var placeAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-", string.Empty);
+                    var placeAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{place.Name.Replace(" ", string.Empty)}-{placeAssetsContainerGuid}";
+                    placeAssetsContainerName = placeAssetsContainerName.Length > 62 ? placeAssetsContainerName.Substring(0, 62) : placeAssetsContainerName;
                     containersNames.Add(placeAssetsContainerName);
 
                     var dbPlace = new Place()
@@ -189,7 +191,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                         {
                             Name = place.AudioTrack.Name,
                             Description = place.AudioTrack.Description,
-                            AssetContainerName = placeAssetsContainerName,
+                            AssetContainerName = audioTrackUploadingResult.ContainerName,
                             AssetFileName = audioTrackUploadingResult.FileName,
                             PlaceId = dbPlace.PlaceId
                         };
@@ -208,7 +210,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                                 Name = image.Name,
                                 Description = image.Description,
                                 PointOfDisplayingStart = image.PointOfDisplayingStart,
-                                AssetContainerName = placeAssetsContainerName,
+                                AssetContainerName = imageUploadingResult.ContainerName,
                                 AssetFileName = imageUploadingResult.FileName,
                                 Place = dbPlace
                             };
@@ -237,7 +239,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     EstimatedDuration = config.EstimatedDuration,
                     GrossPrice = config.GrossPrice,
                     DataSize = tourAssetsSize,
-                    AssetsContainerName = tourAssetsContainerName,
+                    AssetsContainerName = tourAssetsUploadingResult.ContainerName,
                     LogoFileName = tourAssetsUploadingResult.FileName
                 };
                 _tourRepository.Create(dbTour);
