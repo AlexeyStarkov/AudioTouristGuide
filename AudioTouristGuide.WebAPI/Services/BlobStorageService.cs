@@ -25,19 +25,21 @@ namespace AudioTouristGuide.WebAPI.Services
         public async Task<FileUploadResult> UploadFileAsync(string containerName, string filePath, string fileName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(filePath) || _cloudBlobClient == null)
-                return new FileUploadResult(false, fileName);
+                return new FileUploadResult(false, fileName, containerName);
 
-            var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
+            var lowerCaseContainerName = containerName.ToLower();
+
+            var container = _cloudBlobClient.GetContainerReference(lowerCaseContainerName);
             await container.CreateIfNotExistsAsync();
 
             await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Off });
 
             var cloudBlockBlob = container.GetBlockBlobReference(fileName);
             if (cloudBlockBlob == null)
-                return new FileUploadResult(false, fileName);
+                return new FileUploadResult(false, fileName, lowerCaseContainerName);
 
             await cloudBlockBlob.UploadFromFileAsync(filePath);
-            return new FileUploadResult(true, fileName);
+            return new FileUploadResult(true, fileName, lowerCaseContainerName);
         }
 
         public string GetFileTokenizedUrl(string containerName, string fileName)
