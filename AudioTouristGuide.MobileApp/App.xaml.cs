@@ -1,16 +1,27 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using AudioTouristGuide.MobileApp.Pages;
+using AudioTouristGuide.MobileApp.ViewModels;
+using Prism;
+using Prism.Ioc;
+using Prism.Unity;
 
 namespace AudioTouristGuide.MobileApp
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        public App()
+        public App() : this(null) { }
+
+        public App(IPlatformInitializer initializer) : base(initializer) { }
+
+        protected override async void OnInitialized()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            await NavigationService.NavigateAsync("ToursListPage");
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
         }
 
         protected override void OnStart()
@@ -27,5 +38,6 @@ namespace AudioTouristGuide.MobileApp
         {
             // Handle when your app resumes
         }
+
     }
 }
