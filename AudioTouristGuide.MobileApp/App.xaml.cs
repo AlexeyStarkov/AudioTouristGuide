@@ -2,6 +2,7 @@
 using AudioTouristGuide.MobileApp.ViewModels;
 using Prism;
 using Prism.Ioc;
+using Prism.Plugin.Popups;
 using Prism.Unity;
 
 namespace AudioTouristGuide.MobileApp
@@ -21,6 +22,8 @@ namespace AudioTouristGuide.MobileApp
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterPopupNavigationService();
+
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
         }
 
