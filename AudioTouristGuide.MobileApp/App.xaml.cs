@@ -1,4 +1,6 @@
-﻿using AudioTouristGuide.MobileApp.Pages;
+﻿using AudioTouristGuide.MobileApp.Interfaces;
+using AudioTouristGuide.MobileApp.Pages;
+using AudioTouristGuide.MobileApp.Services;
 using AudioTouristGuide.MobileApp.ViewModels;
 using Prism;
 using Prism.Ioc;
@@ -17,12 +19,14 @@ namespace AudioTouristGuide.MobileApp
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("ToursListPage");
+            await NavigationService.NavigateAsync(nameof(ToursListPage));
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterPopupNavigationService();
+            containerRegistry.Register<IApiConnectionService, ApiConnectionService>();
+            containerRegistry.Register<IToursAPIService, ToursAPIService>();
 
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
         }

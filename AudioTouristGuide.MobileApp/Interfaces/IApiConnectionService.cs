@@ -1,5 +1,4 @@
-﻿using System;
-namespace AudioTouristGuide.MobileApp.Interfaces
+﻿namespace AudioTouristGuide.MobileApp.Interfaces
 {
     public interface IApiConnectionService
     {
