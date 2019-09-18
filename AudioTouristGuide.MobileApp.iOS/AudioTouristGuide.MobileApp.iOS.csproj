@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6A577CE4-0D4F-476C-B561-EAC919F963EC}</ProjectGuid>
+    <ProjectGuid>{F2E898A6-14CC-4E9D-BA81-51C8696A8D6B}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{6143fdea-f3c2-4a09-aafa-6e230626515e}</TemplateGuid>
     <OutputType>Exe</OutputType>
@@ -120,12 +120,12 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.1.0.555618" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.778463" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioTouristGuide.MobileApp\AudioTouristGuide.MobileApp.csproj">
-      <Project>{BD6B1D63-C68B-443A-B8A4-26D08D24F0E8}</Project>
+      <Project>{D2C7C075-AE59-4C00-81C6-29B8092874FE}</Project>
       <Name>AudioTouristGuide.MobileApp</Name>
     </ProjectReference>
   </ItemGroup>
