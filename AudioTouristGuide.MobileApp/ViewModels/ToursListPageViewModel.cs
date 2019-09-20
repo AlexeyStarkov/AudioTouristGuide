@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AudioTouristGuide.MobileApp.Interfaces;
+using AudioTouristGuide.MobileApp.Models;
 using AudioTouristGuide.MobileApp.ViewModels.BaseObjects;
 using Prism.Navigation;
 
@@ -9,8 +11,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
     {
         private readonly IToursAPIService _toursAPIService;
 
-        private IEnumerable<> _tours;
-        public IEnumerable<> Tours
+        private IEnumerable<TourModel> _tours;
+        public IEnumerable<TourModel> Tours
         {
             get { return _tours; }
             set { SetProperty(ref _tours, value); }
@@ -30,9 +32,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            var tours = await _toursAPIService.GetAllTours();
-
-            var tour15 = await _toursAPIService.GetTourById(tours.Last().TourId);
+            var dtoTours = await _toursAPIService.GetAllTours();
+            Tours = dtoTours.Select(x => new TourModel(x));
         }
 
         public override void OnNavigatingTo(INavigationParameters parameters)

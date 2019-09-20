@@ -8,6 +8,8 @@
              x:Class="AudioTouristGuide.MobileApp.Pages.ToursListPage">
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="Hello"/>
+        <CollectionView>
+
+        </CollectionView>
     </Grid>
 </ContentPage>
