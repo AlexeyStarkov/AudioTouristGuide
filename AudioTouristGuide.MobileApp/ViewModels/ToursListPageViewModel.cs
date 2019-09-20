@@ -9,6 +9,13 @@ namespace AudioTouristGuide.MobileApp.ViewModels
     {
         private readonly IToursAPIService _toursAPIService;
 
+        private IEnumerable<> _tours;
+        public IEnumerable<> Tours
+        {
+            get { return _tours; }
+            set { SetProperty(ref _tours, value); }
+        }
+
         public ToursListPageViewModel(INavigationService navigationService, IToursAPIService toursAPIService)
             : base(navigationService)
         {
