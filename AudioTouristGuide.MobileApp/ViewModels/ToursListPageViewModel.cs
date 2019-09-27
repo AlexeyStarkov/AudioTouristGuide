@@ -11,8 +11,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
     {
         private readonly IToursAPIService _toursAPIService;
 
-        private IEnumerable<TourModel> _tours;
-        public IEnumerable<TourModel> Tours
+        private IEnumerable<ATGTourModel> _tours;
+        public IEnumerable<ATGTourModel> Tours
         {
             get { return _tours; }
             set { SetProperty(ref _tours, value); }
@@ -33,7 +33,7 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
             base.OnNavigatedTo(parameters);
             var dtoTours = await _toursAPIService.GetAllTours();
-            Tours = dtoTours.Select(x => new TourModel(x));
+            Tours = dtoTours.Select(x => new ATGTourModel(x));
         }
 
         public override void OnNavigatingTo(INavigationParameters parameters)

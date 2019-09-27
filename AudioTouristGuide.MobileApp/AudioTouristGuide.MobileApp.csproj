@@ -25,6 +25,7 @@
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Models\" />
+    <Folder Include="Models\BaseClasses\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioTouristGuide.DTO\AudioTouristGuide.DTO.csproj" />
