@@ -1,7 +1,9 @@
 ﻿using System;
-namespace AudioTouristGuide.MobileApp.Models
+using System.Collections.Generic;
+
+namespace AudioTouristGuide.DTO.Models.Tour
 {
-    public class ATGTourModel
+    public class DTOTourDetailedModel
     {
         public long TourId { get; }
         public string Name { get; }
@@ -11,9 +13,10 @@ namespace AudioTouristGuide.MobileApp.Models
         public long DataSize { get; }
         public decimal? GrossPrice { get; }
         public string LogoUrl { get; }
-        public int NumberOfPlaces { get; }
 
-        public ATGTourModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, int numberOfPlaces, decimal? grossPrice = null)
+        public IEnumerable<DTOPlaceModel> Places { get; }
+
+        public DTOTourDetailedModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, IEnumerable<DTOPlaceModel> places, decimal? grossPrice = null)
         {
             TourId = tourId;
             Name = name;
@@ -23,7 +26,7 @@ namespace AudioTouristGuide.MobileApp.Models
             DataSize = dataSize;
             GrossPrice = grossPrice;
             LogoUrl = logoUrl;
-            NumberOfPlaces = numberOfPlaces;
+            Places = places;
         }
     }
 }

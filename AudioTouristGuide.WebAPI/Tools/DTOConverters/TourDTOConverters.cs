@@ -15,10 +15,10 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
             _blobStorageService = blobStorageService;
         }
 
-        public DTOTourModel DbTourToDTOModel(Tour dbTour)
+        public DTOTourDetailedModel DbTourToDTOModel(Tour dbTour)
         {
 
-            return new DTOTourModel(
+            return new DTOTourDetailedModel(
                 dbTour.TourId,
                 dbTour.Name,
                 dbTour.Description,
@@ -39,9 +39,9 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.GrossPrice);
         }
 
-        public IEnumerable<DTOTourModel> DbTourCollectionToDTO(IEnumerable<Tour> dbTours)
+        public IEnumerable<DTOTourDetailedModel> DbTourDetailedCollectionToDTO(IEnumerable<Tour> dbTours)
         {
-            return dbTours.Select(dbTour => new DTOTourModel(
+            return dbTours.Select(dbTour => new DTOTourDetailedModel(
                 dbTour.TourId,
                 dbTour.Name,
                 dbTour.Description,
@@ -59,6 +59,20 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                     x.Place.DataSize,
                     new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _blobStorageService.GetFileTokenizedUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName)),
                     new List<DTOImageAssetModel>(x.Place.ImageAssets.Select(y => new DTOImageAssetModel(y.ImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart))))),
+                dbTour.GrossPrice));
+        }
+
+        public IEnumerable<DTOTourModel> DbTourCollectionToDTO(IEnumerable<Tour> dbTours)
+        {
+            return dbTours.Select(dbTour => new DTOTourModel(
+                dbTour.TourId,
+                dbTour.Name,
+                dbTour.Description,
+                dbTour.EstimatedDuration,
+                dbTour.CountryName,
+                dbTour.DataSize,
+                _blobStorageService.GetFileTokenizedUrl(dbTour.AssetsContainerName, dbTour.LogoFileName),
+                dbTour.TourPlaces != null ? dbTour.TourPlaces.Count : 0,
                 dbTour.GrossPrice));
         }
     }
