@@ -6,7 +6,7 @@ namespace AudioTouristGuide.MobileApp.Interfaces
 {
     public interface IToursAPIService
     {
-        Task<IEnumerable<DTOTourModel>> GetAllTours();
-        Task<DTOTourModel> GetTourById(long id);
+        Task<IEnumerable<DTOTourDetailedModel>> GetAllTours();
+        Task<DTOTourDetailedModel> GetTourById(long id);
     }
 }

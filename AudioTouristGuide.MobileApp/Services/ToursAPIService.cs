@@ -15,13 +15,13 @@ namespace AudioTouristGuide.MobileApp.Services
             _apiConnectionService = apiConnectionService;
         }
 
-        public async Task<IEnumerable<DTOTourModel>> GetAllTours()
+        public async Task<IEnumerable<DTOTourDetailedModel>> GetAllTours()
         {
             var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
             return await toursRefitApi.GetAllTours();
         }
 
-        public async Task<DTOTourModel> GetTourById(long id)
+        public async Task<DTOTourDetailedModel> GetTourById(long id)
         {
             var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
             return await toursRefitApi.GetTourById(id);
@@ -31,9 +31,9 @@ namespace AudioTouristGuide.MobileApp.Services
     public interface IToursRefitApi
     {
         [Get("/tour/")]
-        Task<IEnumerable<DTOTourModel>> GetAllTours();
+        Task<IEnumerable<DTOTourDetailedModel>> GetAllTours();
 
         [Get("/tour/{id}")]
-        Task<DTOTourModel> GetTourById(long id);
+        Task<DTOTourDetailedModel> GetTourById(long id);
     }
 }

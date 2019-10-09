@@ -22,20 +22,20 @@ using System.Threading.Tasks;
 namespace AudioTouristGuide.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class TourController : Controller
+    public class ToursController : Controller
     {
-        private readonly IToursRepository _tourRepository;
+        private readonly IToursRepository _toursRepository;
         private readonly IPlacesRepository _placesRepository;
         private readonly IAudioAssetsRepository _audioAssetsRepository;
         private readonly IImageAssetsRepository _imageAssetsRepository;
         private readonly IBlobStorageService _blobStorageService;
         private readonly TourDTOConverters _tourDTOConverters;
 
-        public TourController(IToursRepository tourRepository, IPlacesRepository placesRepository, 
+        public ToursController(IToursRepository toursRepository, IPlacesRepository placesRepository, 
             IAudioAssetsRepository audioAssetsRepository, IImageAssetsRepository imageAssetsRepository,
             IBlobStorageService blobStorageService, TourDTOConverters tourDTOConverters)
         {
-            _tourRepository = tourRepository;
+            _toursRepository = toursRepository;
             _placesRepository = placesRepository;
             _audioAssetsRepository = audioAssetsRepository;
             _imageAssetsRepository = imageAssetsRepository;
@@ -43,21 +43,24 @@ namespace AudioTouristGuide.WebAPI.Controllers
             _tourDTOConverters = tourDTOConverters;
         }
 
-        // GET: api/tour
-        [HttpGet]
-        public async Task<JsonResult> Get()
+        // GET: api/tours
+        [HttpGet("{hasDetails?}")]
+        public async Task<JsonResult> Get(bool hasDetails = false)
         {
-            var dbTours = await _tourRepository.GetAllAsync();
-            var dtoTours = _tourDTOConverters.DbTourCollectionToDTO(dbTours);
-
-            return new JsonResult(dtoTours);
+            var dbTours = await _toursRepository.GetAllAsync();
+            if (hasDetails)
+            {
+                return new JsonResult(_tourDTOConverters.DbTourDetailedCollectionToDTO(dbTours));
+            }
+            
+            return new JsonResult(_tourDTOConverters.DbTourCollectionToDTO(dbTours));
         }
 
-        // GET api/tour/5
+        // GET api/tours/5
         [HttpGet("{id}")]
         public async Task<JsonResult> Get(int id)
         {
-            var dbTour = await _tourRepository.GetByIdAsync(id);
+            var dbTour = await _toursRepository.GetByIdAsync(id);
             var dtoTour = _tourDTOConverters.DbTourToDTOModel(dbTour);
 
             if (dtoTour == null)
@@ -66,11 +69,11 @@ namespace AudioTouristGuide.WebAPI.Controllers
             return new JsonResult(dtoTour);
         }
 
-        // POST api/tour
+        // POST api/tours
         [HttpPost]
         public async Task<JsonResult> Post(IFormFile formFile)
         {
-            DTOTourModel addedTourDto;
+            DTOTourDetailedModel addedTourDto;
 
             if (!formFile.FileName.Contains("zip"))
                 return new JsonResult("The tour archive file should have .zip type") { StatusCode = StatusCodes.Status400BadRequest };
@@ -242,8 +245,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     AssetsContainerName = tourAssetsUploadingResult.ContainerName,
                     LogoFileName = tourAssetsUploadingResult.FileName
                 };
-                _tourRepository.Create(dbTour);
-                await _tourRepository.SaveChangesAsync();
+                _toursRepository.Create(dbTour);
+                await _toursRepository.SaveChangesAsync();
 
                 var places = (await _placesRepository.GetAllAsync()).Where(x => dbPlaces.Any(y => y.PlaceId == x.PlaceId));
                 foreach (var place in places)
@@ -253,7 +256,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 }
                 await _placesRepository.SaveChangesAsync();
 
-                var addedTour = await _tourRepository.GetByIdAsync(dbTour.TourId);
+                var addedTour = await _toursRepository.GetByIdAsync(dbTour.TourId);
                 addedTourDto = _tourDTOConverters.DbTourToDTOModel(addedTour);
             }
             catch (Exception ex)
@@ -273,11 +276,11 @@ namespace AudioTouristGuide.WebAPI.Controllers
             return new JsonResult(addedTourDto) { StatusCode = StatusCodes.Status201Created };
         }
 
-        // DELETE api/values/5
+        // DELETE api/tours/{id}
         [HttpDelete("{id}")]
         public async Task<JsonResult> Delete(int id)
         {
-            var tourToRemove = await _tourRepository.GetByIdAsync(id);
+            var tourToRemove = await _toursRepository.GetByIdAsync(id);
             if (tourToRemove == null)
                 return new JsonResult(null) { StatusCode = StatusCodes.Status404NotFound };
 
@@ -291,8 +294,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
             await Task.WhenAll(removingTasks);
 
-            _tourRepository.Delete(tourToRemove);
-            await _tourRepository.SaveChangesAsync();
+            _toursRepository.Delete(tourToRemove);
+            await _toursRepository.SaveChangesAsync();
 
             return new JsonResult("Tour has been removed successfully");
         }
