@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Prism.Navigation;
 using Prism.Unity;
+using Xamarin.Forms;
 
 namespace AudioTouristGuide.MobileApp.Droid
 {
@@ -19,9 +20,12 @@ namespace AudioTouristGuide.MobileApp.Droid
             base.OnCreate(savedInstanceState);
 
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+            Forms.SetFlags("CollectionView_Experimental");
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             Window.AddFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
 

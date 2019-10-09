@@ -3,33 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              xmlns:models="clr-namespace:AudioTouristGuide.MobileApp.Models"
+             xmlns:viewmodels="clr-namespace:AudioTouristGuide.MobileApp.ViewModels"
              prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              NavigationPage.HasNavigationBar="False"
-             x:DataType="viewmodels:MainPageViewModel"
+             x:DataType="viewmodels:ToursListPageViewModel"
              x:Class="AudioTouristGuide.MobileApp.Pages.ToursListPage">
 
-    <Grid VerticalOptions="Center" HorizontalOptions="Center">
-        <CollectionView>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:ATGTourModel">
-                    <Frame Margin="10,5" CornerRadius="15" Padding="0">
-                        <Grid RowSpacing="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="0.5*"/>
-                                <RowDefinition Height="0.5*"/>
-                            </Grid.RowDefinitions>
-                            <Image Grid.RowSpan="2" Source="{Binding LogoImage}"/>
+    <Grid>
+        <ScrollView>
+            <StackLayout BindableLayout.ItemsSource="{Binding Tours}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:ATGTourDetailedModel">
+                        <Frame HeightRequest="200" Margin="10,5" HasShadow="False" CornerRadius="15" Padding="0" BackgroundColor="LightGray" IsClippedToBounds="True">
+                            <Grid>
+                                <ffimageloading:CachedImage Source="{Binding LogoImage}" Aspect="AspectFill"/>
+                                <Grid RowSpacing="0" Padding="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="0.5*"/>
+                                        <RowDefinition Height="0.5*"/>
+                                    </Grid.RowDefinitions>
+                                
+                                    <Label Grid.Row="0" Text="{Binding Name}" FontSize="20" VerticalOptions="Start" HorizontalOptions="Start"/>
 
-                            <Label Grid.Row="0" Text="{Binding Name}" FontSize="20" VerticalOptions="Start" HorizontalOptions="Start"/>
-
-                            <StackLayout Orientation="Horizontal" Grid.Row="1" Spacing="10">
-                                <Label Text="{Binding DataSize, StringFormat='{0:0} MB'}" FontSize="18"/>
-                                <Label Text="{Binding EstimatedDuration, StringFormat='Est. duration: {0}'}" FontSize="18"/>
-                            </StackLayout>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                    <StackLayout VerticalOptions="End" HorizontalOptions="End" Orientation="Horizontal" Grid.Row="1" Spacing="15">
+                                        <Label Text="{Binding DataSize, StringFormat='{0:0} MB'}" FontSize="18"/>
+                                        <Label Text="{Binding EstimatedDuration, StringFormat='Est. duration: {0}'}" FontSize="18"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Grid>
+                            
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

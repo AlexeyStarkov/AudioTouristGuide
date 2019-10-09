@@ -33,7 +33,7 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
             base.OnNavigatedTo(parameters);
             var dtoTours = await _toursAPIService.GetAllTours();
-            Tours = dtoTours.Select(x => new ATGTourDetailedModel(x));
+            Tours = dtoTours.Select(x => new ATGTourDetailedModel(x)).ToList();
         }
 
         public override void OnNavigatingTo(INavigationParameters parameters)
