@@ -13,11 +13,14 @@ namespace AudioTouristGuide.MobileApp.Models
         public string Description { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
-        public long DataSize { get; set; }
+        public int DataSize { get; set; }
         public decimal GrossPrice { get; set; }
         public ImageSource LogoImage { get; set; }
 
         public IEnumerable<ATGPlaceModel> Places { get; set; }
+
+        public bool HasUpdate => true || Places.Any(x => x.HasUpdate);
+        public int UpdateDataSize => Places.Where(x => x.HasUpdate).Sum(x => x.DataSize);
 
         public ATGTourDetailedModel(DTOTourDetailedModel dtoTourModel)
         {
@@ -26,7 +29,7 @@ namespace AudioTouristGuide.MobileApp.Models
             Description = dtoTourModel.Description;
             EstimatedDuration = dtoTourModel.EstimatedDuration;
             CountryName = dtoTourModel.CountryName;
-            DataSize = dtoTourModel.DataSize / 1048576; //bytes to mb convertation
+            DataSize = (int)(dtoTourModel.DataSize / 1048576); //bytes to mb convertation
             GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
             LogoImage = ImageSource.FromUri(new Uri(dtoTourModel.LogoUrl));
             Places = dtoTourModel.Places.Select(x => new ATGPlaceModel(x));
