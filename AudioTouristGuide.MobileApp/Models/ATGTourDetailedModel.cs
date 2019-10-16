@@ -21,6 +21,7 @@ namespace AudioTouristGuide.MobileApp.Models
 
         public bool HasUpdate => true || Places.Any(x => x.HasUpdate);
         public int UpdateDataSize => Places.Where(x => x.HasUpdate).Sum(x => x.DataSize);
+        public bool IsFree => GrossPrice == 0;
 
         public ATGTourDetailedModel(DTOTourDetailedModel dtoTourModel)
         {

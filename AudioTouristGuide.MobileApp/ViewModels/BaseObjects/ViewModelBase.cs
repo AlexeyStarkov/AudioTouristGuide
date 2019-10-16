@@ -1,9 +1,11 @@
-﻿using Prism.Mvvm;
+﻿using System.Windows.Input;
+using Prism.Mvvm;
 using Prism.Navigation;
+using Xamarin.Forms;
 
 namespace AudioTouristGuide.MobileApp.ViewModels.BaseObjects
 {
-    public class ViewModelBase : BindableBase, INavigationAware, IDestructible
+    public abstract class ViewModelBase : BindableBase, INavigationAware, IDestructible
     {
         protected INavigationService NavigationService { get; private set; }
 
@@ -13,6 +15,11 @@ namespace AudioTouristGuide.MobileApp.ViewModels.BaseObjects
             get { return _isBusy; }
             set { SetProperty(ref _isBusy, value); }
         }
+
+        public virtual ICommand GoBackCommand => new Command(async (parameter) =>
+        {
+            await NavigationService.GoBackAsync();
+        });
 
         public ViewModelBase(INavigationService navigationService)
         {

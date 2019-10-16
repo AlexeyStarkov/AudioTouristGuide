@@ -4,14 +4,78 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodels="clr-namespace:AudioTouristGuide.MobileApp.ViewModels"
+             xmlns:ffimagesvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             NavigationPage.HasNavigationBar="False"
              mc:Ignorable="d"
-             x:DataType="viewmodels:ToursListPageViewModel"
+             x:DataType="viewmodels:TourDetailsPageViewModel"
              x:Class="AudioTouristGuide.MobileApp.Pages.TourDetailsPage">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+    <Grid RowSpacing="0" BackgroundColor="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.1625*"/>
+            <RowDefinition Height="0.3000*"/>
+            <RowDefinition Height="0.2375*"/>
+            <RowDefinition Height="0.1000*"/>
+            <RowDefinition Height="0.2000*"/>
+        </Grid.RowDefinitions>
+
+        <ffimage:CachedImage Grid.RowSpan="2" Source="{Binding Tour.LogoImage}" Aspect="AspectFill"/>
+
+        <Label Grid.Row="2" Text="{Binding Tour.Description}" LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
+
+        <StackLayout Grid.Row="3" HorizontalOptions="Start" Orientation="Horizontal" Spacing="15">
+            <Label Text="{Binding Tour.DataSize, StringFormat='{0:0} MB'}" FontSize="14"/>
+            <Label Text="{Binding Tour.EstimatedDuration, StringFormat='Est. duration: {0}'}" FontSize="14"/>
         </StackLayout>
-    </ContentPage.Content>
+
+        <Frame Grid.Row="3" Padding="3" CornerRadius="5" HorizontalOptions="End" IsVisible="{Binding Tour.HasUpdate}">
+            <Label FontSize="12" Text="{Binding Tour.UpdateDataSize, StringFormat='{Download update - {0:0} MB}'}"/>
+        </Frame>
+
+        <!--NavigationBar-->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.1733*"/>
+                <ColumnDefinition Width="0.6534*"/>
+                <ColumnDefinition Width="0.1733*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" Margin="0,20,0,0">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Grid.GestureRecognizers>
+
+                <ffimagesvg:SvgCachedImage HeightRequest="16" VerticalOptions="Center" HorizontalOptions="Center" Aspect="AspectFit" Source="resource://AudioTouristGuide.MobileApp.Resources.Icons.LeftArrow.svg"/>
+            </Grid>
+
+            <StackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                <Label Text="{Binding Tour.Name}" FontSize="16"/>
+                <Label Text="{Binding Tour.CountryName}" FontSize="10"/>
+            </StackLayout>
+        </Grid>
+
+        <Button Grid.Row="4" Margin="10" BackgroundColor="AliceBlue">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding AlreadyPurchased}" Value="True">
+                    <Setter Property="Text" Value="Play tour"/>
+                </DataTrigger>
+
+                <MultiTrigger TargetType="Button">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding AlreadyPurchased}" Value="False"/>
+                        <BindingCondition Binding="{Binding Tour.IsFree}" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Text" Value="{Binding Tour.GrossPrice, StringFormat='Buy for {0} USD'}"/>
+                </MultiTrigger>
+
+                <MultiTrigger TargetType="Button">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding AlreadyPurchased}" Value="False"/>
+                        <BindingCondition Binding="{Binding Tour.IsFree}" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Text" Value="{Binding Tour.GrossPrice, StringFormat='Get for free'}"/>
+                </MultiTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
 </ContentPage>

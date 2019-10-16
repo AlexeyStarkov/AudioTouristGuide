@@ -29,6 +29,7 @@ namespace AudioTouristGuide.MobileApp
             containerRegistry.Register<IToursAPIService, ToursAPIService>();
 
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
+            containerRegistry.RegisterForNavigation<TourDetailsPage, TourDetailsPageViewModel>();
         }
 
         protected override void OnStart()
