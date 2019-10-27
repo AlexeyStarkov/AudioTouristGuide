@@ -24,7 +24,7 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 

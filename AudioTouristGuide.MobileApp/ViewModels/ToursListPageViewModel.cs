@@ -24,7 +24,7 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         public ICommand GoToTourDetailsCommand => new Command(async (parameter) =>
         {
             var navigationParameters = new NavigationParameters();
-            navigationParameters.Add("tour", Tours);
+            navigationParameters.Add("tour", parameter);
             await NavigationService.NavigateAsync(nameof(TourDetailsPage), navigationParameters);
         });
 
