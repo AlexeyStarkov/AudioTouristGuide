@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -24,15 +24,26 @@
     <PackageReference Include="Xamarin.FFImageLoading.Svg" Version="2.4.11.982" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\BaseObjects\" />
-    <Folder Include="Pages\" />
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Models\" />
     <Folder Include="Models\BaseClasses\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\Icons\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioTouristGuide.DTO\AudioTouristGuide.DTO.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Icons\LeftArrow.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\TourDetailsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\Icons\LeftArrow.svg" />
   </ItemGroup>
 </Project>

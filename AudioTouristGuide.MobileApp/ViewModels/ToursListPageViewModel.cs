@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Models;
+using AudioTouristGuide.MobileApp.Pages;
 using AudioTouristGuide.MobileApp.ViewModels.BaseObjects;
 using Prism.Navigation;
+using Xamarin.Forms;
 
 namespace AudioTouristGuide.MobileApp.ViewModels
 {
@@ -18,15 +21,17 @@ namespace AudioTouristGuide.MobileApp.ViewModels
             set { SetProperty(ref _tours, value); }
         }
 
+        public ICommand GoToTourDetailsCommand => new Command(async (parameter) =>
+        {
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("tour", parameter);
+            await NavigationService.NavigateAsync(nameof(TourDetailsPage), navigationParameters);
+        });
+
         public ToursListPageViewModel(INavigationService navigationService, IToursAPIService toursAPIService)
             : base(navigationService)
         {
             _toursAPIService = toursAPIService;
-        }
-
-        public override void OnNavigatedFrom(INavigationParameters parameters)
-        {
-            base.OnNavigatedFrom(parameters);
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -34,11 +39,6 @@ namespace AudioTouristGuide.MobileApp.ViewModels
             base.OnNavigatedTo(parameters);
             var dtoTours = await _toursAPIService.GetAllTours();
             Tours = dtoTours.Select(x => new ATGTourDetailedModel(x)).ToList();
-        }
-
-        public override void OnNavigatingTo(INavigationParameters parameters)
-        {
-            base.OnNavigatingTo(parameters);
         }
     }
 }
