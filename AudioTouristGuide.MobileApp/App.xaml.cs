@@ -1,6 +1,8 @@
 ﻿using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Pages;
 using AudioTouristGuide.MobileApp.Services;
+using AudioTouristGuide.MobileApp.Storage.Interfaces;
+using AudioTouristGuide.MobileApp.Storage.Repositories;
 using AudioTouristGuide.MobileApp.ViewModels;
 using Prism;
 using Prism.Ioc;
@@ -27,6 +29,8 @@ namespace AudioTouristGuide.MobileApp
             containerRegistry.RegisterPopupNavigationService();
             containerRegistry.Register<IApiConnectionService, ApiConnectionService>();
             containerRegistry.Register<IToursAPIService, ToursAPIService>();
+            containerRegistry.Register<IDataRepository, DataRepository>();
+            containerRegistry.Register<IFileRepository, FileRepository>();
 
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
             containerRegistry.RegisterForNavigation<TourDetailsPage, TourDetailsPageViewModel>();
