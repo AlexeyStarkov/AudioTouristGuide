@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace AudioTouristGuide.MobileApp.Storage.Interfaces
 {
-    public interface IRepository : IDisposable
+    public interface IDataRepository
     {
         long Add<T>(T item) where T : IStorageItem;
         T GetById<T>(long id) where T : IStorageItem;
