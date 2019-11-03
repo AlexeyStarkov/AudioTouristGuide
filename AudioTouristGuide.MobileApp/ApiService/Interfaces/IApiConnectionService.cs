@@ -1,4 +1,4 @@
-﻿namespace AudioTouristGuide.MobileApp.Interfaces
+﻿namespace AudioTouristGuide.MobileApp.ApiService.Interfaces
 {
     public interface IApiConnectionService
     {

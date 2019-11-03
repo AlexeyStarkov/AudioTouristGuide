@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using AudioTouristGuide.DTO.Models.Tour;
-using Xamarin.Forms;
+using AudioTouristGuide.MobileApp.Storage.Interfaces;
+using LiteDB;
 
 namespace AudioTouristGuide.MobileApp.Models
 {
-    public class ATGTourDetailedModel
+    public class ATGTourDetailedModel : IStorageItem
     {
+        [BsonId]
+        public long ID { get; set; }
         public long TourId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -15,7 +18,7 @@ namespace AudioTouristGuide.MobileApp.Models
         public string CountryName { get; set; }
         public int DataSize { get; set; }
         public decimal GrossPrice { get; set; }
-        public ImageSource LogoImage { get; set; }
+        public ATGImageAssetModel LogoImageAsset { get; set; }
 
         public IEnumerable<ATGPlaceModel> Places { get; set; }
 
@@ -32,7 +35,7 @@ namespace AudioTouristGuide.MobileApp.Models
             CountryName = dtoTourModel.CountryName;
             DataSize = (int)(dtoTourModel.DataSize / 1048576); //bytes to mb convertation
             GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
-            LogoImage = ImageSource.FromUri(new Uri(dtoTourModel.LogoUrl));
+            LogoImageAsset = new ATGImageAssetModel(dtoTourModel.TourLogo);
             Places = dtoTourModel.Places.Select(x => new ATGPlaceModel(x));
         }
     }

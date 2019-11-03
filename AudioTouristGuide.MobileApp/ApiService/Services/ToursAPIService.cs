@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AudioTouristGuide.DTO.Models.Tour;
-using AudioTouristGuide.MobileApp.Interfaces;
+using AudioTouristGuide.MobileApp.ApiService.Interfaces;
 using Refit;
 
-namespace AudioTouristGuide.MobileApp.Services
+namespace AudioTouristGuide.MobileApp.ApiService.Services
 {
     public class ToursAPIService : IToursAPIService
     {
@@ -15,13 +15,13 @@ namespace AudioTouristGuide.MobileApp.Services
             _apiConnectionService = apiConnectionService;
         }
 
-        public async Task<IEnumerable<DTOTourDetailedModel>> GetAllTours()
+        public async Task<IEnumerable<DTOTourDetailedModel>> GetAllToursAsync()
         {
             var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
             return await toursRefitApi.GetAllTours();
         }
 
-        public async Task<DTOTourDetailedModel> GetTourById(long id)
+        public async Task<DTOTourDetailedModel> GetTourByIdAsync(long id)
         {
             var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
             return await toursRefitApi.GetTourById(id);

@@ -38,6 +38,11 @@ namespace AudioTouristGuide.MobileApp.Storage.Repositories
             return LiteRepository.SingleById<T>(id);
         }
 
+        public bool Update<T>(T item) where T : IStorageItem
+        {
+            return LiteRepository.Update(item);
+        }
+
         public bool Delete<T>(long id) where T : IStorageItem
         {
             return LiteRepository.Delete<T>(id);

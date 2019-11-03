@@ -1,4 +1,6 @@
-﻿using AudioTouristGuide.MobileApp.Interfaces;
+﻿using AudioTouristGuide.MobileApp.ApiService.Interfaces;
+using AudioTouristGuide.MobileApp.ApiService.Services;
+using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Pages;
 using AudioTouristGuide.MobileApp.Services;
 using AudioTouristGuide.MobileApp.Storage.Interfaces;
@@ -31,6 +33,7 @@ namespace AudioTouristGuide.MobileApp
             containerRegistry.Register<IToursAPIService, ToursAPIService>();
             containerRegistry.Register<IDataRepository, DataRepository>();
             containerRegistry.Register<IFileRepository, FileRepository>();
+            containerRegistry.RegisterSingleton<ITourDownloadService, TourDownloadService>();
 
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
             containerRegistry.RegisterForNavigation<TourDetailsPage, TourDetailsPageViewModel>();

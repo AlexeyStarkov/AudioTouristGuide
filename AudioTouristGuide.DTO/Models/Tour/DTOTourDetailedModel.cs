@@ -12,7 +12,7 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public string CountryName { get; }
         public long DataSize { get; }
         public decimal? GrossPrice { get; }
-        public string LogoUrl { get; }
+        public DTOImageAssetModel TourLogo { get; set; }
 
         public IEnumerable<DTOPlaceModel> Places { get; }
 

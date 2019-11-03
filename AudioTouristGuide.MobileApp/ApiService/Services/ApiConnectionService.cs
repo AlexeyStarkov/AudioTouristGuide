@@ -1,6 +1,6 @@
-﻿using AudioTouristGuide.MobileApp.Interfaces;
+﻿using AudioTouristGuide.MobileApp.ApiService.Interfaces;
 
-namespace AudioTouristGuide.MobileApp.Services
+namespace AudioTouristGuide.MobileApp.ApiService.Services
 {
     public class ApiConnectionService : IApiConnectionService
     {
