@@ -1,13 +1,13 @@
 ﻿using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Models.BaseClasses;
 
-namespace AudioTouristGuide.MobileApp.Models
+namespace AudioTouristGuide.MobileApp.Storage.Models
 {
-    public class ATGAudioAssetModel : ATGAssetBaseModel
+    public class ATGAudioAssetDBModel : ATGAssetBaseDBModel
     {
         public long AudioAssetId { get; }
 
-        public ATGAudioAssetModel(DTOAudioAssetModel dtoAudioAssetModel) : base(dtoAudioAssetModel)
+        public ATGAudioAssetDBModel(DTOAudioAssetModel dtoAudioAssetModel) : base(dtoAudioAssetModel)
         {
             AudioAssetId = dtoAudioAssetModel.AudioAssetId;
         }

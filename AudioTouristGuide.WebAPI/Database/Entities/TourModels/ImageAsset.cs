@@ -9,7 +9,7 @@ namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ImageAssetId { get; set; }
-        public TimeSpan PointOfDisplayingStart { get; set; }
+        public TimeSpan? PointOfDisplayingStart { get; set; }
 
         public long PlaceId { get; set; }
         public Place Place { get; set; }

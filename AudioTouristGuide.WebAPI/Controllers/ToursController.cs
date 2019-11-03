@@ -196,7 +196,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
                             Description = place.AudioTrack.Description,
                             AssetContainerName = audioTrackUploadingResult.ContainerName,
                             AssetFileName = audioTrackUploadingResult.FileName,
-                            PlaceId = dbPlace.PlaceId
+                            PlaceId = dbPlace.PlaceId,
+                            LastUpdate = DateTime.Now
                         };
                         _audioAssetsRepository.Create(dbAudioAsset);
                         await _audioAssetsRepository.SaveChangesAsync();
@@ -215,7 +216,8 @@ namespace AudioTouristGuide.WebAPI.Controllers
                                 PointOfDisplayingStart = image.PointOfDisplayingStart,
                                 AssetContainerName = imageUploadingResult.ContainerName,
                                 AssetFileName = imageUploadingResult.FileName,
-                                Place = dbPlace
+                                Place = dbPlace,
+                                LastUpdate = DateTime.Now
                             };
                             _imageAssetsRepository.Create(dbImageAsset);
                             await _imageAssetsRepository.SaveChangesAsync();
@@ -242,8 +244,13 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     EstimatedDuration = config.EstimatedDuration,
                     GrossPrice = config.GrossPrice,
                     DataSize = tourAssetsSize,
-                    AssetsContainerName = tourAssetsUploadingResult.ContainerName,
-                    LogoFileName = tourAssetsUploadingResult.FileName
+                    LogoImage = new ImageAsset()
+                    {
+                        Name = tourLogoFileName,
+                        AssetContainerName = tourAssetsUploadingResult.ContainerName,
+                        AssetFileName = tourAssetsUploadingResult.FileName,
+                        LastUpdate = DateTime.Now
+                    }
                 };
                 _toursRepository.Create(dbTour);
                 await _toursRepository.SaveChangesAsync();

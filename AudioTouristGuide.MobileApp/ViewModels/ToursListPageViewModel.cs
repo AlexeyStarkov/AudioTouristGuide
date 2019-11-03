@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using AudioTouristGuide.MobileApp.ApiService.Interfaces;
 using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Models;
 using AudioTouristGuide.MobileApp.Pages;
@@ -14,8 +15,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
     {
         private readonly IToursAPIService _toursAPIService;
 
-        private IEnumerable<ATGTourDetailedModel> _tours;
-        public IEnumerable<ATGTourDetailedModel> Tours
+        private IEnumerable<ATGTourUIModel> _tours;
+        public IEnumerable<ATGTourUIModel> Tours
         {
             get { return _tours; }
             set { SetProperty(ref _tours, value); }
@@ -37,8 +38,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            var dtoTours = await _toursAPIService.GetAllTours();
-            Tours = dtoTours.Select(x => new ATGTourDetailedModel(x)).ToList();
+            var dtoTours = await _toursAPIService.GetAllToursAsync();
+            //Tours = dtoTours.Select(x => new ATGTourDetailedModel(x)).ToList();
         }
     }
 }

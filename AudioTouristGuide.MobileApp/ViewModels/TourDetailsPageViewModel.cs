@@ -1,10 +1,6 @@
 ﻿using AudioTouristGuide.MobileApp.Models;
 using AudioTouristGuide.MobileApp.ViewModels.BaseObjects;
 using Prism.Navigation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AudioTouristGuide.MobileApp.ViewModels
 {
@@ -12,8 +8,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
     {
         public bool AlreadyPurchased => true;
 
-        private ATGTourDetailedModel _tour;
-        public ATGTourDetailedModel Tour
+        private ATGTourUIModel _tour;
+        public ATGTourUIModel Tour
         {
             get { return _tour; }
             set { SetProperty(ref _tour, value); }
@@ -28,7 +24,6 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
             base.OnNavigatingTo(parameters);
 
-            Tour = parameters.FirstOrDefault(x => x.Value is ATGTourDetailedModel).Value as ATGTourDetailedModel;
         }
     }
 }

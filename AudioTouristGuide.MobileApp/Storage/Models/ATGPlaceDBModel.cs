@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AudioTouristGuide.DTO.Models.Tour;
+using Xamarin.Essentials;
 
-namespace AudioTouristGuide.MobileApp.Models
+namespace AudioTouristGuide.MobileApp.Storage.Models
 {
-    public class ATGPlaceModel
+    public class ATGPlaceDBModel
     {
         public long PlaceId { get; }
         public string Name { get; }
@@ -14,12 +15,10 @@ namespace AudioTouristGuide.MobileApp.Models
         public double Longitude { get; }
         public int DataSize { get; }
 
-        public ATGAudioAssetModel AudioAsset { get; }
-        public IEnumerable<ATGImageAssetModel> ImageAssets { get; }
+        public ATGAudioAssetDBModel AudioAsset { get; }
+        public IEnumerable<ATGImageAssetDBModel> ImageAssets { get; }
 
-        public bool HasUpdate => true;
-
-        public ATGPlaceModel(DTOPlaceModel dtoPlaceModel)
+        public ATGPlaceDBModel(DTOPlaceModel dtoPlaceModel)
         {
             PlaceId = dtoPlaceModel.PlaceId;
             Name = dtoPlaceModel.Name;
@@ -28,8 +27,8 @@ namespace AudioTouristGuide.MobileApp.Models
             Latitude = dtoPlaceModel.Latitude;
             Longitude = dtoPlaceModel.Longitude;
             DataSize = (int)(dtoPlaceModel.DataSize / 1048576); //bytes to mb convertation
-            AudioAsset = new ATGAudioAssetModel(dtoPlaceModel.AudioAsset);
-            ImageAssets = dtoPlaceModel.ImageAssets.Select(x => new ATGImageAssetModel(x));
+            AudioAsset = new ATGAudioAssetDBModel(dtoPlaceModel.AudioAsset);
+            ImageAssets = dtoPlaceModel.ImageAssets.Select(x => new ATGImageAssetDBModel(x));
         }
     }
 }

@@ -2,14 +2,14 @@
 using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Models.BaseClasses;
 
-namespace AudioTouristGuide.MobileApp.Models
+namespace AudioTouristGuide.MobileApp.Storage.Models
 {
-    public class ATGImageAssetModel : ATGAssetBaseModel
+    public class ATGImageAssetDBModel : ATGAssetBaseDBModel
     {
         public long ImageAssetId { get; }
         public TimeSpan PointOfDisplayingStart { get; }
 
-        public ATGImageAssetModel(DTOImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
+        public ATGImageAssetDBModel(DTOImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
         {
             ImageAssetId = dtoImageAssetModel.ImageAssetId;
             PointOfDisplayingStart = dtoImageAssetModel.PointOfDisplayingStart;

@@ -5,9 +5,9 @@ using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Storage.Interfaces;
 using LiteDB;
 
-namespace AudioTouristGuide.MobileApp.Models
+namespace AudioTouristGuide.MobileApp.Storage.Models
 {
-    public class ATGTourDetailedModel : IStorageItem
+    public class ATGTourDetailedDBModel : IStorageItem
     {
         [BsonId]
         public long ID { get; set; }
@@ -16,27 +16,25 @@ namespace AudioTouristGuide.MobileApp.Models
         public string Description { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
-        public int DataSize { get; set; }
+        public string Settlement { get; set; }
+        public long DataSize { get; set; }
         public decimal GrossPrice { get; set; }
-        public ATGImageAssetModel LogoImageAsset { get; set; }
+        public ATGImageAssetDBModel LogoImageAsset { get; set; }
 
-        public IEnumerable<ATGPlaceModel> Places { get; set; }
+        public IEnumerable<ATGPlaceDBModel> Places { get; set; }
 
-        public bool HasUpdate => true || Places.Any(x => x.HasUpdate);
-        public int UpdateDataSize => Places.Where(x => x.HasUpdate).Sum(x => x.DataSize);
-        public bool IsFree => GrossPrice == 0;
-
-        public ATGTourDetailedModel(DTOTourDetailedModel dtoTourModel)
+        public ATGTourDetailedDBModel(DTOTourDetailedModel dtoTourModel)
         {
             TourId = dtoTourModel.TourId;
             Name = dtoTourModel.Name;
             Description = dtoTourModel.Description;
             EstimatedDuration = dtoTourModel.EstimatedDuration;
             CountryName = dtoTourModel.CountryName;
-            DataSize = (int)(dtoTourModel.DataSize / 1048576); //bytes to mb convertation
+            DataSize = dtoTourModel.DataSize;
             GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
-            LogoImageAsset = new ATGImageAssetModel(dtoTourModel.TourLogo);
-            Places = dtoTourModel.Places.Select(x => new ATGPlaceModel(x));
+            LogoImageAsset = new ATGImageAssetDBModel(dtoTourModel.TourLogo);
+            Places = dtoTourModel.Places.Select(x => new ATGPlaceDBModel(x));
+            Settlement = dtoTourModel.Settlement;
         }
     }
 }

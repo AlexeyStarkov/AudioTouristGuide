@@ -3,7 +3,7 @@ using AudioTouristGuide.DTO.Models.Tour;
 
 namespace AudioTouristGuide.MobileApp.Models.BaseClasses
 {
-    public abstract class ATGAssetBaseModel
+    public abstract class ATGAssetBaseDBModel
     {
         public string Name { get; }
         public string Description { get; }
@@ -12,7 +12,7 @@ namespace AudioTouristGuide.MobileApp.Models.BaseClasses
         public DateTime? LastUpdate { get; set; }
         public string AssetLocalStorageId { get; set; }
 
-        public ATGAssetBaseModel(DTOAssetBaseModel dtoAssetBaseModel)
+        protected ATGAssetBaseDBModel(DTOAssetBaseModel dtoAssetBaseModel)
         {
             Name = dtoAssetBaseModel.Name;
             Description = dtoAssetBaseModel.Description;

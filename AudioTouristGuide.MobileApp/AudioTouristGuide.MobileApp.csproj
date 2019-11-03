@@ -30,17 +30,16 @@
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Models\" />
-    <Folder Include="Models\BaseClasses\" />
     <Folder Include="Resources\" />
     <Folder Include="Resources\Icons\" />
     <Folder Include="Storage\" />
     <Folder Include="Storage\Interfaces\" />
     <Folder Include="Storage\Repositories\" />
-    <Folder Include="Storage\Services\" />
     <Folder Include="ApiService\" />
     <Folder Include="ApiService\Interfaces\" />
     <Folder Include="ApiService\Services\" />
     <Folder Include="Tools\" />
+    <Folder Include="Storage\Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioTouristGuide.DTO\AudioTouristGuide.DTO.csproj" />

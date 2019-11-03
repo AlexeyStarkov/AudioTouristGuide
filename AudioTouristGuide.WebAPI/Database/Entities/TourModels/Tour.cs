@@ -15,11 +15,11 @@ namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
         public string Description { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
+        public string Settlement { get; set; }
         public long DataSize { get; set; }
         public decimal? GrossPrice { get; set; }
 
-        public string AssetsContainerName { get; set; }
-        public string LogoFileName { get; set; }
+        public ImageAsset LogoImage { get; set; }
 
         public ICollection<TourPlace> TourPlaces { get; set; }
         public ICollection<MemberPurchasedTour> MemberPurchasedTours { get; set; }

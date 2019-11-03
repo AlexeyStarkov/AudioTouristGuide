@@ -10,13 +10,14 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public string Description { get; }
         public TimeSpan EstimatedDuration { get; }
         public string CountryName { get; }
+        public string Settlement { get; }
         public long DataSize { get; }
         public decimal? GrossPrice { get; }
         public DTOImageAssetModel TourLogo { get; set; }
 
         public IEnumerable<DTOPlaceModel> Places { get; }
 
-        public DTOTourDetailedModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, IEnumerable<DTOPlaceModel> places, decimal? grossPrice = null)
+        public DTOTourDetailedModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, string settlement, long dataSize, DTOImageAssetModel tourLogo, IEnumerable<DTOPlaceModel> places, decimal? grossPrice = null)
         {
             TourId = tourId;
             Name = name;
@@ -25,8 +26,9 @@ namespace AudioTouristGuide.DTO.Models.Tour
             CountryName = countryName;
             DataSize = dataSize;
             GrossPrice = grossPrice;
-            LogoUrl = logoUrl;
+            TourLogo = tourLogo;
             Places = places;
+            Settlement = settlement;
         }
     }
 }
