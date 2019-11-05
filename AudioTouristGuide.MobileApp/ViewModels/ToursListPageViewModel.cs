@@ -39,7 +39,19 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
             base.OnNavigatedTo(parameters);
             var dtoTours = await _toursAPIService.GetAllToursAsync();
-            //Tours = dtoTours.Select(x => new ATGTourDetailedModel(x)).ToList();
+            //Tours = dtoTours.Select(x => new ATGTourUIModel()
+            //{
+            //    TourId = x.TourId,
+            //    Name = x.Name,
+            //    Description = x.Description,
+            //    EstimatedDuration = x.EstimatedDuration,
+            //    CountryName = x.CountryName,
+            //    Settlement = x.Settlement,
+            //    LogoImage = ImageSource.FromUri(new System.Uri(x.TourLogo.AssetFileUrl)),
+            //    PlacesCount = x.Places.Count(),
+            //    GrossPrice = x.GrossPrice,
+            //    Spots = x.Places
+            //}).ToList();
         }
     }
 }

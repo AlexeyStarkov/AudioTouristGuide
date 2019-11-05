@@ -15,7 +15,7 @@ namespace AudioTouristGuide.MobileApp.Models
         public string Settlement { get; set; }
         public ImageSource LogoImage { get; set; }
         public int PlacesCount { get; set; }
-        public decimal GrossPrice { get; set; }
+        public decimal? GrossPrice { get; set; }
         public int DataSize { get; set; }
         public IEnumerable<ATGTourPlaceUIModel> Spots { get; set; }
 

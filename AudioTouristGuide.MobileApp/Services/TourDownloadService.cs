@@ -98,12 +98,13 @@ namespace AudioTouristGuide.MobileApp.Services
                 placesAssetsDownloaders.Add(new FileGroupDownloader(new List<IDownloadFile>() { tourLogoImageDownloader }));
             }
 
-            foreach (var localTourPlace in newLocalTourModel.Places)
+            FileGroupDownloader nextPlaceToDownload = null;
+            foreach (var newlocalTourPlace in newLocalTourModel.Places)
             {
                 var placeAssetsDownloaders = new List<IDownloadFile>();
-                var apiPlace = tour.Places.First(x => x.PlaceId == localTourPlace.PlaceId);
+                var apiPlace = tour.Places.First(x => x.PlaceId == newlocalTourPlace.PlaceId);
 
-                var localTourPlaceTimeStamp = localTourPlace.AudioAsset.LastUpdate;
+                var localTourPlaceTimeStamp = newlocalTourPlace.AudioAsset.LastUpdate;
                 if (apiPlace.AudioAsset != null && apiPlace.AudioAsset.LastUpdate > localTourPlaceTimeStamp)
                 {
                     var placeAudioAssetDownloader = _downloadManager.CreateDownloadFile(apiPlace.AudioAsset.AssetFileUrl);
@@ -133,7 +134,7 @@ namespace AudioTouristGuide.MobileApp.Services
                     placeAssetsDownloaders.Add(placeAudioAssetDownloader);
                 }
 
-                foreach (var localTourPlaceImageAsset in localTourPlace.ImageAssets)
+                foreach (var localTourPlaceImageAsset in newlocalTourPlace.ImageAssets)
                 {
                     var apiPlaceImage = apiPlace.ImageAssets.First(x => x.ImageAssetId == localTourPlaceImageAsset.ImageAssetId);
                     var localTourPlaceImageAssetTimeStamp = localTourPlaceImageAsset.LastUpdate;
@@ -171,7 +172,7 @@ namespace AudioTouristGuide.MobileApp.Services
                 var placeAssetsDownloadersGroup = new FileGroupDownloader(placeAssetsDownloaders);
                 placeAssetsDownloadersGroup.GroupDownloadedSuccessfully += (s, e) =>
                 {
-                    var nextPlaceToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
+                    nextPlaceToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
                     foreach (var fileToDownload in nextPlaceToDownload?.FilesToDownload)
                     {
                         _downloadManager.Start(fileToDownload);
@@ -180,7 +181,7 @@ namespace AudioTouristGuide.MobileApp.Services
                 placesAssetsDownloaders.Add(placeAssetsDownloadersGroup);
             }
 
-            var nextPlaceToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
+            nextPlaceToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
             foreach (var fileToDownload in nextPlaceToDownload?.FilesToDownload)
             {
                 _downloadManager.Start(fileToDownload);

@@ -23,6 +23,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.Name,
                 dbTour.Description,
                 dbTour.EstimatedDuration,
+                dbTour.Settlement,
                 dbTour.CountryName,
                 dbTour.DataSize,
                 new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.PointOfDisplayingStart, dbTour.LogoImage.LastUpdate),
@@ -47,6 +48,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.Description,
                 dbTour.EstimatedDuration,
                 dbTour.CountryName,
+                dbTour.Settlement,
                 dbTour.DataSize,
                 new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.PointOfDisplayingStart, dbTour.LogoImage.LastUpdate),
                 dbTour.TourPlaces?.Select(x => new DTOPlaceModel(

@@ -7,7 +7,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
     public class ATGImageAssetDBModel : ATGAssetBaseDBModel
     {
         public long ImageAssetId { get; }
-        public TimeSpan PointOfDisplayingStart { get; }
+        public TimeSpan? PointOfDisplayingStart { get; }
 
         public ATGImageAssetDBModel(DTOImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
         {

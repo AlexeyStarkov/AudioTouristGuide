@@ -292,7 +292,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 return new JsonResult(null) { StatusCode = StatusCodes.Status404NotFound };
 
             var removingTasks = new List<Task>();
-            removingTasks.Add(_blobStorageService.RemoveContainerAsync(tourToRemove.AssetsContainerName));
+            removingTasks.Add(_blobStorageService.RemoveContainerAsync(tourToRemove.LogoImage.AssetContainerName));
 
             foreach (var place in tourToRemove.TourPlaces)
             {

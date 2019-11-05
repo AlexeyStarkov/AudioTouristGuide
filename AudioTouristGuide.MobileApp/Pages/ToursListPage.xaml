@@ -14,7 +14,7 @@
         <ScrollView>
             <StackLayout BindableLayout.ItemsSource="{Binding Tours}">
                 <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="models:ATGTourDetailedModel">
+                    <DataTemplate x:DataType="models:ATGTourUIModel">
                         <Frame HeightRequest="200" Margin="10,5" HasShadow="False" CornerRadius="15" Padding="0" BackgroundColor="LightGray" IsClippedToBounds="True">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.GoToTourDetailsCommand, Source={x:Reference MainGrid}}" CommandParameter="{Binding .}"/>
