@@ -20,7 +20,7 @@
                                 <TapGestureRecognizer Command="{Binding BindingContext.GoToTourDetailsCommand, Source={x:Reference MainGrid}}" CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
                             <Grid InputTransparent="True">
-                                <ffimageloading:CachedImage Source="{Binding LogoImage}" Aspect="AspectFill"/>
+                                <ffimageloading:CachedImage Source="{Binding CoverImage}" Aspect="AspectFill"/>
                                 <Grid RowSpacing="5" Padding="10">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="0.4*"/>

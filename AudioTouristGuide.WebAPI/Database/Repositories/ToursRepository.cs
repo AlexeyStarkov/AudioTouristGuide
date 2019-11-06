@@ -18,6 +18,7 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
         public override async Task<IEnumerable<Tour>> GetAllAsync()
         {
             return await DBContext.Tours
+                .Include(t => t.LogoImage)
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)
@@ -28,6 +29,7 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
         public override async Task<Tour> GetByIdAsync(long id)
         {
             return await DBContext.Tours
+                .Include(t => t.LogoImage)
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)

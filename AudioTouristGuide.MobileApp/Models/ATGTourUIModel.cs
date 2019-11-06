@@ -13,7 +13,7 @@ namespace AudioTouristGuide.MobileApp.Models
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
         public string Settlement { get; set; }
-        public ImageSource LogoImage { get; set; }
+        public ImageSource CoverImage { get; set; }
         public int PlacesCount { get; set; }
         public decimal? GrossPrice { get; set; }
         public int DataSize { get; set; }

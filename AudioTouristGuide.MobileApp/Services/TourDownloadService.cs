@@ -45,8 +45,8 @@ namespace AudioTouristGuide.MobileApp.Services
             {
                 newLocalTourModel = new ATGTourDetailedDBModel(tour);
                 newLocalTourModel.ID = localTourDetailedModel.ID;
-                if (newLocalTourModel.LogoImageAsset != null)
-                    newLocalTourModel.LogoImageAsset.AssetLocalStorageId = localTourDetailedModel.LogoImageAsset.AssetLocalStorageId;
+                if (newLocalTourModel.CoverImageAsset != null)
+                    newLocalTourModel.CoverImageAsset.AssetLocalStorageId = localTourDetailedModel.CoverImageAsset.AssetLocalStorageId;
 
                 foreach (var newLocalTourPlace in newLocalTourModel.Places)
                 {
@@ -69,7 +69,7 @@ namespace AudioTouristGuide.MobileApp.Services
                 _dataRepository.Update(newLocalTourModel);
             }
 
-            var newLocalTourModelLogoLocalTimeStamp = newLocalTourModel.LogoImageAsset.LastUpdate;
+            var newLocalTourModelLogoLocalTimeStamp = newLocalTourModel.CoverImageAsset.LastUpdate;
             if (tour.TourLogo != null && tour.TourLogo.LastUpdate > newLocalTourModelLogoLocalTimeStamp)
             {
                 var tourLogoImageDownloader = _downloadManager.CreateDownloadFile(tour.TourLogo.AssetFileUrl);
@@ -81,7 +81,7 @@ namespace AudioTouristGuide.MobileApp.Services
                         if (downloadFile.Status == DownloadFileStatus.COMPLETED)
                         {
                             var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
-                            var tourLogoFileStorageId = localTourData.LogoImageAsset.AssetLocalStorageId;
+                            var tourLogoFileStorageId = localTourData.CoverImageAsset.AssetLocalStorageId;
                             if (string.IsNullOrEmpty(tourLogoFileStorageId))
                             {
                                 tourLogoFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{tour.TourLogo.ImageAssetId}";
@@ -89,8 +89,8 @@ namespace AudioTouristGuide.MobileApp.Services
 
                             _fileRepository.Delete(tourLogoFileStorageId);
                             var fileLocalStorageId = _fileRepository.Add(tourLogoFileStorageId, downloadFile.DestinationPathName);
-                            localTourData.LogoImageAsset.AssetLocalStorageId = fileLocalStorageId;
-                            localTourData.LogoImageAsset.LastUpdate = tour.TourLogo.LastUpdate;
+                            localTourData.CoverImageAsset.AssetLocalStorageId = fileLocalStorageId;
+                            localTourData.CoverImageAsset.LastUpdate = tour.TourLogo.LastUpdate;
                             _dataRepository.Update(localTourData);
                         }
                     }

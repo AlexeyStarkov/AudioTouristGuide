@@ -15,7 +15,7 @@
     <PackageReference Include="Prism.Forms" Version="7.2.0.1367" />
     <PackageReference Include="Prism.Unity.Forms" Version="7.2.0.1367" />
     <PackageReference Include="Prism.Plugin.Popups" Version="7.2.0.573" />
-    <PackageReference Include="refit" Version="4.7.51" />
+    <PackageReference Include="refit" Version="4.8.14" />
     <PackageReference Include="Rg.Plugins.Popup" Version="1.2.0.223" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Svg.Forms" Version="2.4.11.982" />

@@ -19,7 +19,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         public string Settlement { get; set; }
         public long DataSize { get; set; }
         public decimal GrossPrice { get; set; }
-        public ATGImageAssetDBModel LogoImageAsset { get; set; }
+        public ATGImageAssetDBModel CoverImageAsset { get; set; }
 
         public IEnumerable<ATGPlaceDBModel> Places { get; set; }
 
@@ -32,7 +32,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
             CountryName = dtoTourModel.CountryName;
             DataSize = dtoTourModel.DataSize;
             GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
-            LogoImageAsset = new ATGImageAssetDBModel(dtoTourModel.TourLogo);
+            CoverImageAsset = new ATGImageAssetDBModel(dtoTourModel.TourLogo);
             Places = dtoTourModel.Places.Select(x => new ATGPlaceDBModel(x));
             Settlement = dtoTourModel.Settlement;
         }

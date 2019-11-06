@@ -44,21 +44,16 @@ namespace AudioTouristGuide.WebAPI.Controllers
         }
 
         // GET: api/tours
-        [HttpGet("{hasDetails?}")]
-        public async Task<JsonResult> Get(bool hasDetails = false)
+        [HttpGet("")]
+        public async Task<JsonResult> GetAllTours()
         {
             var dbTours = await _toursRepository.GetAllAsync();
-            if (hasDetails)
-            {
-                return new JsonResult(_tourDTOConverters.DbTourDetailedCollectionToDTO(dbTours));
-            }
-            
-            return new JsonResult(_tourDTOConverters.DbTourCollectionToDTO(dbTours));
+            return new JsonResult(_tourDTOConverters.DbTourDetailedCollectionToDTO(dbTours));
         }
 
-        // GET api/tours/5
-        [HttpGet("{id}")]
-        public async Task<JsonResult> Get(int id)
+        // GET api/tours
+        [HttpGet("GetTourById/{id}")]
+        public async Task<JsonResult> GetTourById(int id)
         {
             var dbTour = await _toursRepository.GetByIdAsync(id);
             var dtoTour = _tourDTOConverters.DbTourToDTOModel(dbTour);
@@ -116,10 +111,13 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 if (string.IsNullOrEmpty(config.CountryName))
                     validationErrorMessages.Add("Country name is required");
 
+                if (string.IsNullOrEmpty(config.Settlement))
+                    validationErrorMessages.Add("Settlement name is required");
+
                 if (config.EstimatedDuration.TotalSeconds < 1)
                     validationErrorMessages.Add("Estimated duration is required");
 
-                if (config.GrossPrice.GetValueOrDefault(0) == 0)
+                if (config.GrossPrice.HasValue && config.GrossPrice.Value == 0)
                     validationErrorMessages.Add($"GrossPrice should be null or more than 0");
 
                 if (config.Places == null)
@@ -142,9 +140,9 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
                 //upload tour assets to azure blob storage
                 var tourAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-",string.Empty);
-                var tourAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{config.Name.Replace(" ", string.Empty)}-{tourAssetsContainerGuid}";
+                var tourAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{config.Settlement.Replace(" ", string.Empty)}-{config.Name.Replace(" ", string.Empty)}-{tourAssetsContainerGuid}";
                 tourAssetsContainerName = tourAssetsContainerName.Length > 62 ? tourAssetsContainerName.Substring(0, 62) : tourAssetsContainerName;
-                var tourLogoFileName = config.LogoFileName;
+                var tourLogoFileName = config.CoverImageFileName;
                 containersNames.Add(tourAssetsContainerName);
 
                 async Task<FileUploadResult> UploadAssetToAsync(string assetFileName, string targetContainerName)
@@ -170,7 +168,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 foreach (var place in config.Places)
                 {
                     var placeAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-", string.Empty);
-                    var placeAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{place.Name.Replace(" ", string.Empty)}-{placeAssetsContainerGuid}";
+                    var placeAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{config.Settlement.Replace(" ", string.Empty)}-{place.Name.Replace(" ", string.Empty)}-{placeAssetsContainerGuid}";
                     placeAssetsContainerName = placeAssetsContainerName.Length > 62 ? placeAssetsContainerName.Substring(0, 62) : placeAssetsContainerName;
                     containersNames.Add(placeAssetsContainerName);
 
@@ -241,6 +239,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     Name = config.Name,
                     Description = config.Description,
                     CountryName = config.CountryName,
+                    Settlement = config.Settlement,
                     EstimatedDuration = config.EstimatedDuration,
                     GrossPrice = config.GrossPrice,
                     DataSize = tourAssetsSize,
@@ -292,11 +291,13 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 return new JsonResult(null) { StatusCode = StatusCodes.Status404NotFound };
 
             var removingTasks = new List<Task>();
-            removingTasks.Add(_blobStorageService.RemoveContainerAsync(tourToRemove.LogoImage.AssetContainerName));
+            if (!string.IsNullOrEmpty(tourToRemove.LogoImage?.AssetContainerName))
+                removingTasks.Add(_blobStorageService.RemoveContainerAsync(tourToRemove.LogoImage.AssetContainerName));
 
             foreach (var place in tourToRemove.TourPlaces)
             {
-                removingTasks.Add(_blobStorageService.RemoveContainerAsync(place.Place.AssetsContainerName));
+                if (!string.IsNullOrEmpty(place.Place?.AssetsContainerName))
+                    removingTasks.Add(_blobStorageService.RemoveContainerAsync(place.Place.AssetsContainerName));
             }
 
             await Task.WhenAll(removingTasks);
@@ -304,7 +305,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             _toursRepository.Delete(tourToRemove);
             await _toursRepository.SaveChangesAsync();
 
-            return new JsonResult("Tour has been removed successfully");
+            return new JsonResult("The tour has been removed successfully");
         }
     }
 }
