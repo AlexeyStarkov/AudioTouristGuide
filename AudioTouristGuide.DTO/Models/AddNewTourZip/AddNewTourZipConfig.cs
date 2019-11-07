@@ -9,8 +9,9 @@ namespace AudioTouristGuide.DTO.Models.AddNewTourZip
         public string Description { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string CountryName { get; set; }
+        public string Settlement { get; set; }
         public decimal? GrossPrice { get; set; }
-        public string LogoFileName { get; set; }
+        public string CoverImageFileName { get; set; }
 
         public IEnumerable<AddNewTourZipPlace> Places { get; set; }
     }

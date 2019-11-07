@@ -36,6 +36,6 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
 
         public abstract Task<IEnumerable<T>> GetAllAsync();
 
-        public abstract Task<IEnumerable<T>> GetByCondition(Expression<Func<T, bool>> expression);
+        public abstract Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression);
     }
 }

@@ -9,7 +9,7 @@ namespace AudioTouristGuide.WebAPI.Database.Interfaces
     {
         Task<T> GetByIdAsync(long id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetByCondition(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression);
         void Create(T entity);
         void Update(T entity);
         void Delete(T entity);

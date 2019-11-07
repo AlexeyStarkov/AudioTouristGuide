@@ -17,6 +17,7 @@
     <Folder Include="Storage\" />
     <Folder Include="Storage\Models\" />
     <Folder Include="Tools\DTOConverters\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>

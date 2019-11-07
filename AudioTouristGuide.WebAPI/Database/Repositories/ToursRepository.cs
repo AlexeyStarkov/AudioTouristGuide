@@ -18,23 +18,25 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
         public override async Task<IEnumerable<Tour>> GetAllAsync()
         {
             return await DBContext.Tours
+                .Include(t => t.LogoImage)
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets)
+                    .ThenInclude(tp => tp.Place.PlaceImageAssets)
                 .ToListAsync();
         }
 
         public override async Task<Tour> GetByIdAsync(long id)
         {
             return await DBContext.Tours
+                .Include(t => t.LogoImage)
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets).FirstOrDefaultAsync(t => t.TourId == id);
+                    .ThenInclude(tp => tp.Place.PlaceImageAssets).FirstOrDefaultAsync(t => t.TourId == id);
         }
 
-        public override async Task<IEnumerable<Tour>> GetByCondition(Expression<Func<Tour, bool>> expression)
+        public override async Task<IEnumerable<Tour>> GetAllAsync(Expression<Func<Tour, bool>> expression)
         {
             return await DBContext.Tours.Where(expression).ToListAsync();
         }

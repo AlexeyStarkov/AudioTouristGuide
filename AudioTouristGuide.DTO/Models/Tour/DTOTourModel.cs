@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 namespace AudioTouristGuide.DTO.Models.Tour
 {
     public class DTOTourModel
@@ -13,10 +11,9 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public long DataSize { get; }
         public decimal? GrossPrice { get; }
         public string LogoUrl { get; }
+        public int NumberOfPlaces { get; }
 
-        public IEnumerable<DTOPlaceModel> Places { get; }
-
-        public DTOTourModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, IEnumerable<DTOPlaceModel> places, decimal? grossPrice = null)
+        public DTOTourModel(long tourId, string name, string description, TimeSpan estimatedDuration, string countryName, long dataSize, string logoUrl, int numberOfPlaces, decimal? grossPrice = null)
         {
             TourId = tourId;
             Name = name;
@@ -26,7 +23,7 @@ namespace AudioTouristGuide.DTO.Models.Tour
             DataSize = dataSize;
             GrossPrice = grossPrice;
             LogoUrl = logoUrl;
-            Places = places;
+            NumberOfPlaces = numberOfPlaces;
         }
     }
 }

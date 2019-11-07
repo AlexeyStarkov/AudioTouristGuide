@@ -13,9 +13,9 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public long DataSize { get; }
 
         public DTOAudioAssetModel AudioAsset { get; }
-        public IEnumerable<DTOImageAssetModel> ImageAssets { get; }
+        public IEnumerable<DTOPlaceImageAssetModel> ImageAssets { get; }
 
-        public DTOPlaceModel(long placeId, string name, string displayName, string description, double latitude, double longitude, long dataSize, DTOAudioAssetModel audioAsset, IEnumerable<DTOImageAssetModel> imageAssets)
+        public DTOPlaceModel(long placeId, string name, string displayName, string description, double latitude, double longitude, long dataSize, DTOAudioAssetModel audioAsset, IEnumerable<DTOPlaceImageAssetModel> imageAssets)
         {
             PlaceId = placeId;
             Name = name;

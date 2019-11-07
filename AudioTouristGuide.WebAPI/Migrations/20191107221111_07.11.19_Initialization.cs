@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AudioTouristGuide.WebAPI.Migrations
 {
-    public partial class Initial : Migration
+    public partial class _071119_Initialization : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,7 +39,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                 {
                     PlaceId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AssetsFolderGuid = table.Column<string>(nullable: true),
+                    AssetsContainerName = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     DisplayName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
@@ -53,26 +53,6 @@ namespace AudioTouristGuide.WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tours",
-                columns: table => new
-                {
-                    TourId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AssetsFolderGuid = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    EstimatedDuration = table.Column<TimeSpan>(nullable: false),
-                    CountryName = table.Column<string>(nullable: true),
-                    DataSize = table.Column<long>(nullable: false),
-                    GrossPrice = table.Column<decimal>(nullable: true),
-                    LogoUrl = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tours", x => x.TourId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AudioAssets",
                 columns: table => new
                 {
@@ -80,7 +60,9 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    AssetFileUrl = table.Column<string>(nullable: true),
+                    AssetContainerName = table.Column<string>(nullable: true),
+                    AssetFileName = table.Column<string>(nullable: true),
+                    LastUpdate = table.Column<DateTime>(nullable: false),
                     PlaceId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -102,9 +84,12 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    AssetFileUrl = table.Column<string>(nullable: true),
-                    PointOfDisplayingStart = table.Column<TimeSpan>(nullable: false),
-                    PlaceId = table.Column<long>(nullable: false)
+                    AssetContainerName = table.Column<string>(nullable: true),
+                    AssetFileName = table.Column<string>(nullable: true),
+                    LastUpdate = table.Column<DateTime>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    PointOfDisplayingStart = table.Column<TimeSpan>(nullable: true),
+                    PlaceId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -115,6 +100,32 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         principalTable: "Places",
                         principalColumn: "PlaceId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tours",
+                columns: table => new
+                {
+                    TourId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    EstimatedDuration = table.Column<TimeSpan>(nullable: false),
+                    CountryName = table.Column<string>(nullable: true),
+                    Settlement = table.Column<string>(nullable: true),
+                    DataSize = table.Column<long>(nullable: false),
+                    GrossPrice = table.Column<decimal>(nullable: true),
+                    LogoImageImageAssetId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tours", x => x.TourId);
+                    table.ForeignKey(
+                        name: "FK_Tours_ImageAssets_LogoImageImageAssetId",
+                        column: x => x.LogoImageImageAssetId,
+                        principalTable: "ImageAssets",
+                        principalColumn: "ImageAssetId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,15 +254,17 @@ namespace AudioTouristGuide.WebAPI.Migrations
                 name: "IX_TourPlace_TourId",
                 table: "TourPlace",
                 column: "TourId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tours_LogoImageImageAssetId",
+                table: "Tours",
+                column: "LogoImageImageAssetId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "AudioAssets");
-
-            migrationBuilder.DropTable(
-                name: "ImageAssets");
 
             migrationBuilder.DropTable(
                 name: "MemberDesiredTour");
@@ -269,10 +282,13 @@ namespace AudioTouristGuide.WebAPI.Migrations
                 name: "Members");
 
             migrationBuilder.DropTable(
-                name: "Places");
+                name: "Tours");
 
             migrationBuilder.DropTable(
-                name: "Tours");
+                name: "ImageAssets");
+
+            migrationBuilder.DropTable(
+                name: "Places");
         }
     }
 }

@@ -47,6 +47,7 @@ namespace AudioTouristGuide.WebAPI
                 services.AddTransient<IPlacesRepository, PlacesRepository>();
                 services.AddTransient<IAudioAssetsRepository, AudioAssetsRepository>();
                 services.AddTransient<IImageAssetsRepository, ImageAssetsRepository>();
+                services.AddTransient<IPlaceImageAssetsRepository, PlaceImageAssetsRepository>();
                
             }
             catch (System.Exception ex)

@@ -1,4 +1,6 @@
-﻿namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
+﻿using System;
+
+namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
 {
     public abstract class AssetBase
     {
@@ -6,5 +8,6 @@
         public string Description { get; set; }
         public string AssetContainerName { get; set; }
         public string AssetFileName { get; set; }
+        public DateTime LastUpdate { get; set; }
     }
 }

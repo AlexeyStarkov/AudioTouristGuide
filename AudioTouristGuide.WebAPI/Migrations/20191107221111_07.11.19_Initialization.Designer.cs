@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AudioTouristGuide.WebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20190915204308_15.09.19")]
-    partial class _150919
+    [Migration("20191107221111_07.11.19_Initialization")]
+    partial class _071119_Initialization
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,6 +122,8 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<DateTime>("LastUpdate");
+
                     b.Property<string>("Name");
 
                     b.Property<long>("PlaceId");
@@ -146,17 +148,18 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<DateTime>("LastUpdate");
+
                     b.Property<string>("Name");
-
-                    b.Property<long>("PlaceId");
-
-                    b.Property<TimeSpan>("PointOfDisplayingStart");
 
                     b.HasKey("ImageAssetId");
 
-                    b.HasIndex("PlaceId");
-
                     b.ToTable("ImageAssets");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ImageAsset");
                 });
 
             modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", b =>
@@ -190,8 +193,6 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AssetsContainerName");
-
                     b.Property<string>("CountryName");
 
                     b.Property<long>("DataSize");
@@ -202,13 +203,30 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<decimal?>("GrossPrice");
 
-                    b.Property<string>("LogoFileName");
+                    b.Property<long?>("LogoImageImageAssetId");
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Settlement");
+
                     b.HasKey("TourId");
 
+                    b.HasIndex("LogoImageImageAssetId");
+
                     b.ToTable("Tours");
+                });
+
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
+                {
+                    b.HasBaseType("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset");
+
+                    b.Property<long>("PlaceId");
+
+                    b.Property<TimeSpan>("PointOfDisplayingStart");
+
+                    b.HasIndex("PlaceId");
+
+                    b.HasDiscriminator().HasValue("PlaceImageAsset");
                 });
 
             modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberDesiredTour", b =>
@@ -271,10 +289,17 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", b =>
+                {
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", "LogoImage")
+                        .WithMany()
+                        .HasForeignKey("LogoImageImageAssetId");
+                });
+
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
                 {
                     b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", "Place")
-                        .WithMany("ImageAssets")
+                        .WithMany("PlaceImageAssets")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

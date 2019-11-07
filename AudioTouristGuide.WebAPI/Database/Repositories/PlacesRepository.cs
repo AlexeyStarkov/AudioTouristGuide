@@ -17,17 +17,17 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
 
         public override async Task<IEnumerable<Place>> GetAllAsync()
         {
-            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.ImageAssets).Include(x => x.TourPlaces).ToListAsync();
+            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.PlaceImageAssets).Include(x => x.TourPlaces).ToListAsync();
         }
 
-        public override async Task<IEnumerable<Place>> GetByCondition(Expression<Func<Place, bool>> expression)
+        public override async Task<IEnumerable<Place>> GetAllAsync(Expression<Func<Place, bool>> expression)
         {
             return await DBContext.Places.Where(expression).ToListAsync();
         }
 
         public override async Task<Place> GetByIdAsync(long id)
         {
-            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.ImageAssets).FirstOrDefaultAsync(x => x.PlaceId == id);
+            return await DBContext.Places.Include(x => x.AudioAsset).Include(x => x.PlaceImageAssets).FirstOrDefaultAsync(x => x.PlaceId == id);
         }
     }
 }
