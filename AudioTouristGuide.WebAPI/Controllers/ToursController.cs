@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class ToursController : Controller
     {
         private readonly IToursRepository _toursRepository;
