@@ -150,13 +150,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long>("PlaceId");
-
-                    b.Property<TimeSpan?>("PointOfDisplayingStart");
-
                     b.HasKey("ImageAssetId");
-
-                    b.HasIndex("PlaceId");
 
                     b.ToTable("ImageAssets");
                 });
@@ -186,6 +180,33 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("Places");
                 });
 
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
+                {
+                    b.Property<long>("PlaceImageAssetId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AssetContainerName");
+
+                    b.Property<string>("AssetFileName");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("LastUpdate");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("PlaceId");
+
+                    b.Property<TimeSpan>("PointOfDisplayingStart");
+
+                    b.HasKey("PlaceImageAssetId");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("PlaceImageAssets");
+                });
+
             modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", b =>
                 {
                     b.Property<long>("TourId")
@@ -193,8 +214,6 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CountryName");
-
-                    b.Property<long?>("CoverImageImageAssetId");
 
                     b.Property<long>("DataSize");
 
@@ -204,13 +223,15 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<decimal?>("GrossPrice");
 
+                    b.Property<long?>("LogoImageImageAssetId");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("Settlement");
 
                     b.HasKey("TourId");
 
-                    b.HasIndex("CoverImageImageAssetId");
+                    b.HasIndex("LogoImageImageAssetId");
 
                     b.ToTable("Tours");
                 });
@@ -275,19 +296,19 @@ namespace AudioTouristGuide.WebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
                 {
                     b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", "Place")
-                        .WithMany("ImageAssets")
+                        .WithMany("PlaceImageAssets")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", "CoverImage")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", "LogoImage")
                         .WithMany()
-                        .HasForeignKey("CoverImageImageAssetId");
+                        .HasForeignKey("LogoImageImageAssetId");
                 });
 #pragma warning restore 612, 618
         }

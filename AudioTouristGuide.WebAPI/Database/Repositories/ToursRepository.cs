@@ -22,7 +22,7 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets)
+                    .ThenInclude(tp => tp.Place.PlaceImageAssets)
                 .ToListAsync();
         }
 
@@ -33,10 +33,10 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
                 .Include(t => t.TourPlaces)
                     .ThenInclude(tp => tp.Place.AudioAsset)
                 .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.ImageAssets).FirstOrDefaultAsync(t => t.TourId == id);
+                    .ThenInclude(tp => tp.Place.PlaceImageAssets).FirstOrDefaultAsync(t => t.TourId == id);
         }
 
-        public override async Task<IEnumerable<Tour>> GetByCondition(Expression<Func<Tour, bool>> expression)
+        public override async Task<IEnumerable<Tour>> GetAllAsync(Expression<Func<Tour, bool>> expression)
         {
             return await DBContext.Tours.Where(expression).ToListAsync();
         }

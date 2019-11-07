@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AudioTouristGuide.WebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20190827205835_Initial")]
-    partial class Initial
+    [Migration("20191107221913_07.11.19_1")]
+    partial class _071119_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberDesiredTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberDesiredTour", b =>
                 {
                     b.Property<long>("MemberId");
 
@@ -34,7 +34,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("MemberDesiredTour");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberFavoriteTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberFavoriteTour", b =>
                 {
                     b.Property<long>("MemberId");
 
@@ -47,7 +47,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("MemberFavoriteTour");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberPurchasedTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberPurchasedTour", b =>
                 {
                     b.Property<long>("MemberId");
 
@@ -60,7 +60,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("MemberPurchasedTour");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.TourPlace", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.TourPlace", b =>
                 {
                     b.Property<long>("PlaceId");
 
@@ -73,7 +73,7 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("TourPlace");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.MemberModels.Member", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.MemberModels.Member", b =>
                 {
                     b.Property<long>("MemberId")
                         .ValueGeneratedOnAdd()
@@ -110,15 +110,19 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.AudioAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.AudioAsset", b =>
                 {
                     b.Property<long>("AudioAssetId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AssetFileUrl");
+                    b.Property<string>("AssetContainerName");
+
+                    b.Property<string>("AssetFileName");
 
                     b.Property<string>("Description");
+
+                    b.Property<DateTime>("LastUpdate");
 
                     b.Property<string>("Name");
 
@@ -132,36 +136,34 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("AudioAssets");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.ImageAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", b =>
                 {
                     b.Property<long>("ImageAssetId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AssetFileUrl");
+                    b.Property<string>("AssetContainerName");
+
+                    b.Property<string>("AssetFileName");
 
                     b.Property<string>("Description");
 
+                    b.Property<DateTime>("LastUpdate");
+
                     b.Property<string>("Name");
 
-                    b.Property<long>("PlaceId");
-
-                    b.Property<TimeSpan>("PointOfDisplayingStart");
-
                     b.HasKey("ImageAssetId");
-
-                    b.HasIndex("PlaceId");
 
                     b.ToTable("ImageAssets");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.Place", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", b =>
                 {
                     b.Property<long>("PlaceId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AssetsFolderGuid");
+                    b.Property<string>("AssetsContainerName");
 
                     b.Property<long>("DataSize");
 
@@ -180,13 +182,38 @@ namespace AudioTouristGuide.WebAPI.Migrations
                     b.ToTable("Places");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.Tour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
+                {
+                    b.Property<long>("PlaceImageAssetId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AssetContainerName");
+
+                    b.Property<string>("AssetFileName");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("LastUpdate");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("PlaceId");
+
+                    b.Property<TimeSpan>("PointOfDisplayingStart");
+
+                    b.HasKey("PlaceImageAssetId");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("PlaceImageAssets");
+                });
+
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", b =>
                 {
                     b.Property<long>("TourId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AssetsFolderGuid");
 
                     b.Property<string>("CountryName");
 
@@ -198,81 +225,92 @@ namespace AudioTouristGuide.WebAPI.Migrations
 
                     b.Property<decimal?>("GrossPrice");
 
-                    b.Property<string>("LogoUrl");
+                    b.Property<long?>("LogoImageImageAssetId");
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Settlement");
+
                     b.HasKey("TourId");
+
+                    b.HasIndex("LogoImageImageAssetId");
 
                     b.ToTable("Tours");
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberDesiredTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberDesiredTour", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.MemberModels.Member", "Member")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.MemberModels.Member", "Member")
                         .WithMany("MemberDesiredTour")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Tour", "Tour")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", "Tour")
                         .WithMany("MemberDesiredTours")
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberFavoriteTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberFavoriteTour", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.MemberModels.Member", "Member")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.MemberModels.Member", "Member")
                         .WithMany("MemberFavoriteTours")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Tour", "Tour")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", "Tour")
                         .WithMany("MemberFavoriteTours")
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.MemberPurchasedTour", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.MemberPurchasedTour", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.MemberModels.Member", "Member")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.MemberModels.Member", "Member")
                         .WithMany("MemberPurchasedTours")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Tour", "Tour")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", "Tour")
                         .WithMany("MemberPurchasedTours")
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.JoinTablesModels.TourPlace", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.JoinTablesModels.TourPlace", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Place", "Place")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", "Place")
                         .WithMany("TourPlaces")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Tour", "Tour")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", "Tour")
                         .WithMany("TourPlaces")
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.AudioAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.AudioAsset", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Place", "Place")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", "Place")
                         .WithOne("AudioAsset")
-                        .HasForeignKey("AudioTouristGuide.WebAPI.Database.TourModels.AudioAsset", "PlaceId")
+                        .HasForeignKey("AudioTouristGuide.WebAPI.Database.Entities.TourModels.AudioAsset", "PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.TourModels.ImageAsset", b =>
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.PlaceImageAsset", b =>
                 {
-                    b.HasOne("AudioTouristGuide.WebAPI.Database.TourModels.Place", "Place")
-                        .WithMany("ImageAssets")
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Place", "Place")
+                        .WithMany("PlaceImageAssets")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("AudioTouristGuide.WebAPI.Database.Entities.TourModels.Tour", b =>
+                {
+                    b.HasOne("AudioTouristGuide.WebAPI.Database.Entities.TourModels.ImageAsset", "LogoImage")
+                        .WithMany()
+                        .HasForeignKey("LogoImageImageAssetId");
                 });
 #pragma warning restore 612, 618
         }

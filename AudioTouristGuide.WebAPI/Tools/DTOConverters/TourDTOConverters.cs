@@ -26,7 +26,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.Settlement,
                 dbTour.CountryName,
                 dbTour.DataSize,
-                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.PointOfDisplayingStart, dbTour.LogoImage.LastUpdate),
+                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
                 dbTour.TourPlaces?.Select(x => new DTOPlaceModel(
                     x.Place.PlaceId,
                     x.Place.Name,
@@ -36,7 +36,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                     x.Place.Longitude,
                     x.Place.DataSize,
                     new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _blobStorageService.GetFileTokenizedUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
-                    new List<DTOImageAssetModel>(x.Place.ImageAssets.Select(y => new DTOImageAssetModel(y.ImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
+                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
                 dbTour.GrossPrice);
         }
 
@@ -50,7 +50,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.CountryName,
                 dbTour.Settlement,
                 dbTour.DataSize,
-                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.PointOfDisplayingStart, dbTour.LogoImage.LastUpdate),
+                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
                 dbTour.TourPlaces?.Select(x => new DTOPlaceModel(
                     x.Place.PlaceId,
                     x.Place.Name,
@@ -60,7 +60,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                     x.Place.Longitude,
                     x.Place.DataSize,
                     new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _blobStorageService.GetFileTokenizedUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
-                    new List<DTOImageAssetModel>(x.Place.ImageAssets.Select(y => new DTOImageAssetModel(y.ImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
+                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
                 dbTour.GrossPrice));
         }
 

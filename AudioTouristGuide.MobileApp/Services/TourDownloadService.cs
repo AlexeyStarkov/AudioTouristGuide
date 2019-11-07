@@ -57,11 +57,11 @@ namespace AudioTouristGuide.MobileApp.Services
                         newLocalTourPlace.AudioAsset.LastUpdate = oldPlaceAudioAsset.LastUpdate;
                     }
 
-                    foreach (var newLocalTourPlaceImageAsset in newLocalTourPlace.ImageAssets)
+                    foreach (var newLocalTourPlaceImageAsset in newLocalTourPlace.PlaceImageAssets)
                     {
                         var oldImageAsset = localTourDetailedModel.Places
-                            .FirstOrDefault(x => x.PlaceId == newLocalTourPlace.PlaceId)?.ImageAssets
-                            .FirstOrDefault(y => y.ImageAssetId == newLocalTourPlaceImageAsset.ImageAssetId);
+                            .FirstOrDefault(x => x.PlaceId == newLocalTourPlace.PlaceId)?.PlaceImageAssets
+                            .FirstOrDefault(y => y.PlaceImageAssetId == newLocalTourPlaceImageAsset.PlaceImageAssetId);
                         newLocalTourPlaceImageAsset.AssetLocalStorageId = oldImageAsset?.AssetLocalStorageId;
                         newLocalTourPlaceImageAsset.LastUpdate = oldImageAsset?.LastUpdate;
                     }
@@ -134,9 +134,9 @@ namespace AudioTouristGuide.MobileApp.Services
                     placeAssetsDownloaders.Add(placeAudioAssetDownloader);
                 }
 
-                foreach (var localTourPlaceImageAsset in newlocalTourPlace.ImageAssets)
+                foreach (var localTourPlaceImageAsset in newlocalTourPlace.PlaceImageAssets)
                 {
-                    var apiPlaceImage = apiPlace.ImageAssets.First(x => x.ImageAssetId == localTourPlaceImageAsset.ImageAssetId);
+                    var apiPlaceImage = apiPlace.ImageAssets.First(x => x.PlaceImageAssetId == localTourPlaceImageAsset.PlaceImageAssetId);
                     var localTourPlaceImageAssetTimeStamp = localTourPlaceImageAsset.LastUpdate;
                     if (apiPlaceImage.LastUpdate > localTourPlaceImageAssetTimeStamp)
                     {
@@ -150,12 +150,12 @@ namespace AudioTouristGuide.MobileApp.Services
                                 {
                                     var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
                                     var localTourPlace = localTourData.Places.FirstOrDefault(x => x.PlaceId == apiPlace.PlaceId);
-                                    var localTourPlaceImage = localTourPlace.ImageAssets.First(x => x.ImageAssetId == apiPlaceImage.ImageAssetId);
+                                    var localTourPlaceImage = localTourPlace.PlaceImageAssets.First(x => x.PlaceImageAssetId == apiPlaceImage.PlaceImageAssetId);
 
                                     var placeImageFileStorageId = localTourPlaceImage.AssetLocalStorageId;
                                     if (string.IsNullOrEmpty(placeImageFileStorageId))
                                     {
-                                        placeImageFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{localTourPlace.PlaceId}/{localTourPlaceImage.ImageAssetId}";
+                                        placeImageFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{localTourPlace.PlaceId}/{localTourPlaceImage.PlaceImageAssetId}";
                                     }
 
                                     _fileRepository.Delete(placeImageFileStorageId);

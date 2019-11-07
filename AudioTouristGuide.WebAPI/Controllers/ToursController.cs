@@ -28,12 +28,14 @@ namespace AudioTouristGuide.WebAPI.Controllers
         private readonly IPlacesRepository _placesRepository;
         private readonly IAudioAssetsRepository _audioAssetsRepository;
         private readonly IImageAssetsRepository _imageAssetsRepository;
+        private readonly IPlaceImageAssetsRepository _placeImageAssetsRepository;
         private readonly IBlobStorageService _blobStorageService;
         private readonly TourDTOConverters _tourDTOConverters;
 
         public ToursController(IToursRepository toursRepository, IPlacesRepository placesRepository, 
             IAudioAssetsRepository audioAssetsRepository, IImageAssetsRepository imageAssetsRepository,
-            IBlobStorageService blobStorageService, TourDTOConverters tourDTOConverters)
+            IBlobStorageService blobStorageService, TourDTOConverters tourDTOConverters,
+            IPlaceImageAssetsRepository placeImageAssetsRepository)
         {
             _toursRepository = toursRepository;
             _placesRepository = placesRepository;
@@ -41,6 +43,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             _imageAssetsRepository = imageAssetsRepository;
             _blobStorageService = blobStorageService;
             _tourDTOConverters = tourDTOConverters;
+            _placeImageAssetsRepository = placeImageAssetsRepository;
         }
 
         // GET: api/tours
@@ -207,7 +210,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                         var imageUploadingResult = await UploadAssetToAsync(imageFileName, placeAssetsContainerName);
                         if (imageUploadingResult.HasSuccess)
                         {
-                            var dbImageAsset = new ImageAsset()
+                            var dbImageAsset = new PlaceImageAsset()
                             {
                                 Name = image.Name,
                                 Description = image.Description,
@@ -217,7 +220,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                                 Place = dbPlace,
                                 LastUpdate = DateTime.Now
                             };
-                            _imageAssetsRepository.Create(dbImageAsset);
+                            _placeImageAssetsRepository.Create(dbImageAsset);
                             await _imageAssetsRepository.SaveChangesAsync();
                         }
                     }

@@ -20,7 +20,7 @@ namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
 
         public AudioAsset AudioAsset { get; set; }
 
-        public ICollection<ImageAsset> ImageAssets { get; set; }
+        public ICollection<PlaceImageAsset> PlaceImageAssets { get; set; }
         public ICollection<TourPlace> TourPlaces { get; set; }
     }
 }

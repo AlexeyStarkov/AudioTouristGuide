@@ -20,7 +20,7 @@ namespace AudioTouristGuide.WebAPI.Database.Repositories
             return await DBContext.AudioAssets.Include(x => x.Place).ToListAsync();
         }
 
-        public override async Task<IEnumerable<AudioAsset>> GetByCondition(Expression<Func<AudioAsset, bool>> expression)
+        public override async Task<IEnumerable<AudioAsset>> GetAllAsync(Expression<Func<AudioAsset, bool>> expression)
         {
             return await DBContext.AudioAssets.Where(expression).ToListAsync();
         }

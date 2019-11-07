@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AudioTouristGuide.DTO.Models.Tour;
+using AudioTouristGuide.MobileApp.Tools;
 using Xamarin.Essentials;
 
 namespace AudioTouristGuide.MobileApp.Storage.Models
@@ -13,10 +14,10 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         public string Description { get; }
         public double Latitude { get; }
         public double Longitude { get; }
-        public int DataSize { get; }
+        public double DataSize { get; }
 
         public ATGAudioAssetDBModel AudioAsset { get; }
-        public IEnumerable<ATGImageAssetDBModel> ImageAssets { get; }
+        public IEnumerable<ATGPlaceImageAssetDBModel> PlaceImageAssets { get; }
 
         public ATGPlaceDBModel(DTOPlaceModel dtoPlaceModel)
         {
@@ -26,9 +27,9 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
             Description = dtoPlaceModel.Description;
             Latitude = dtoPlaceModel.Latitude;
             Longitude = dtoPlaceModel.Longitude;
-            DataSize = (int)(dtoPlaceModel.DataSize / 1048576); //bytes to mb convertation
+            DataSize = ATGConverters.BytesToMegabytes(dtoPlaceModel.DataSize);
             AudioAsset = new ATGAudioAssetDBModel(dtoPlaceModel.AudioAsset);
-            ImageAssets = dtoPlaceModel.ImageAssets.Select(x => new ATGImageAssetDBModel(x));
+            PlaceImageAssets = dtoPlaceModel.ImageAssets.Select(x => new ATGPlaceImageAssetDBModel(x));
         }
     }
 }
