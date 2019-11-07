@@ -53,8 +53,8 @@ namespace AudioTouristGuide.MobileApp.Services
                     if (newLocalTourPlace.AudioAsset != null)
                     {
                         var oldPlaceAudioAsset = localTourDetailedModel.Places.FirstOrDefault(x => x.PlaceId == newLocalTourPlace.PlaceId)?.AudioAsset;
-                        newLocalTourPlace.AudioAsset.AssetLocalStorageId = oldPlaceAudioAsset.AssetLocalStorageId;
-                        newLocalTourPlace.AudioAsset.LastUpdate = oldPlaceAudioAsset.LastUpdate;
+                        newLocalTourPlace.AudioAsset.AssetLocalStorageId = oldPlaceAudioAsset?.AssetLocalStorageId;
+                        newLocalTourPlace.AudioAsset.LastUpdate = oldPlaceAudioAsset?.LastUpdate;
                     }
 
                     foreach (var newLocalTourPlaceImageAsset in newLocalTourPlace.PlaceImageAssets)

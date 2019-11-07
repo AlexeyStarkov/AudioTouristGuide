@@ -36,5 +36,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
             Places = dtoTourModel.Places.Select(x => new ATGPlaceDBModel(x));
             Settlement = dtoTourModel.Settlement;
         }
+
+        public ATGTourDetailedDBModel() { }
     }
 }

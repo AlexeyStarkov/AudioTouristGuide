@@ -18,5 +18,7 @@ namespace AudioTouristGuide.MobileApp.Models.BaseClasses
             Description = dtoAssetBaseModel.Description;
             AssetFileUrl = dtoAssetBaseModel.AssetFileUrl;
         }
+
+        protected ATGAssetBaseDBModel() { }
     }
 }

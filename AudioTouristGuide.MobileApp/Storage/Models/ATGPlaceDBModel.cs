@@ -2,7 +2,6 @@
 using System.Linq;
 using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Tools;
-using Xamarin.Essentials;
 
 namespace AudioTouristGuide.MobileApp.Storage.Models
 {
@@ -31,5 +30,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
             AudioAsset = new ATGAudioAssetDBModel(dtoPlaceModel.AudioAsset);
             PlaceImageAssets = dtoPlaceModel.ImageAssets.Select(x => new ATGPlaceImageAssetDBModel(x));
         }
+
+        public ATGPlaceDBModel() { }
     }
 }

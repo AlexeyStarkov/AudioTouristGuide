@@ -11,5 +11,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         {
             AudioAssetId = dtoAudioAssetModel.AudioAssetId;
         }
+
+        public ATGAudioAssetDBModel() { }
     }
 }

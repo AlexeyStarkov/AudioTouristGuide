@@ -30,10 +30,10 @@ namespace AudioTouristGuide.MobileApp.ApiService.Services
 
     public interface IToursRefitApi
     {
-        [Get("tours/")]
+        [Get("/tours/")]
         Task<IEnumerable<DTOTourDetailedModel>> GetAllTours();
 
-        [Get("tours/{id}")]
+        [Get("/tours/GetTourById/{id}")]
         Task<DTOTourDetailedModel> GetTourById(long id);
     }
 }
