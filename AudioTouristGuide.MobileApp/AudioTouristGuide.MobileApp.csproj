@@ -23,7 +23,8 @@
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Svg" Version="2.4.11.982" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Xam.Plugins.DownloadManager" Version="1.4.0" />
+    <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
+    <PackageReference Include="MimeTypesMap" Version="1.0.8" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\BaseObjects\" />
@@ -40,6 +41,8 @@
     <Folder Include="ApiService\Services\" />
     <Folder Include="Tools\" />
     <Folder Include="Storage\Models\" />
+    <Folder Include="EventsArgs\" />
+    <Folder Include="Enums\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioTouristGuide.DTO\AudioTouristGuide.DTO.csproj" />

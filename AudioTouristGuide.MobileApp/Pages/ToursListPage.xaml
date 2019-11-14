@@ -40,6 +40,14 @@
                     </DataTrigger>
                 </BoxView.Triggers>
             </BoxView>
+
+            <StackLayout Orientation="Horizontal" Margin="0,30,0,0">
+                <Label Text="Progress: "/>
+                <Label Text="{Binding ProgressValue}"/>
+            </StackLayout>
+
+            <ffimageloading:CachedImage Source="{Binding ImageSource}" Aspect="AspectFit" HeightRequest="200"/>
+
         </StackLayout>
         
 

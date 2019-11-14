@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AudioTouristGuide.MobileApp.ApiService.Interfaces;
+using AudioTouristGuide.MobileApp.Enums;
 using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Storage.Interfaces;
 using AudioTouristGuide.MobileApp.Storage.Models;
 using AudioTouristGuide.MobileApp.Tools;
-using Plugin.DownloadManager;
-using Plugin.DownloadManager.Abstractions;
 
 namespace AudioTouristGuide.MobileApp.Services
 {
@@ -16,14 +15,12 @@ namespace AudioTouristGuide.MobileApp.Services
         private readonly IToursAPIService _toursAPIService;
         private readonly IFileRepository _fileRepository;
         private readonly IDataRepository _dataRepository;
-        private readonly IDownloadManager _downloadManager;
 
         public TourDownloadService(IToursAPIService toursAPIService, IFileRepository fileRepository, IDataRepository dataRepository)
         {
             _toursAPIService = toursAPIService;
             _fileRepository = fileRepository;
             _dataRepository = dataRepository;
-            _downloadManager = CrossDownloadManager.Current;
         }
 
         public async Task<FileGroupsDownloadingInformer> DownloadOrUpdateTourAsync(long tourId)
@@ -69,66 +66,60 @@ namespace AudioTouristGuide.MobileApp.Services
                 _dataRepository.Update(newLocalTourModel);
             }
 
-            var newLocalTourModelLogoLocalTimeStamp = newLocalTourModel.CoverImageAsset.LastUpdate;
+            var newLocalTourModelLogoLocalTimeStamp = newLocalTourModel.CoverImageAsset.LastUpdate.GetValueOrDefault();
             if (tour.TourLogo != null && tour.TourLogo.LastUpdate > newLocalTourModelLogoLocalTimeStamp)
             {
-                var tourLogoImageDownloader = _downloadManager.CreateDownloadFile(tour.TourLogo.AssetFileUrl);
+                var tourLogoImageDownloader = new FileDownloader(tour.TourLogo.AssetFileUrl, tour.TourLogo.Name);
 
-                tourLogoImageDownloader.PropertyChanged += (s, e) =>
+                tourLogoImageDownloader.FileDownloadingFinished += (s, e) =>
                 {
-                    if (e.PropertyName == nameof(IDownloadFile.Status) && s is IDownloadFile downloadFile)
+                    if (e.Status == DownloadingStatus.Success)
                     {
-                        if (downloadFile.Status == DownloadFileStatus.COMPLETED)
+                        var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
+                        var tourLogoFileStorageId = localTourData.CoverImageAsset.AssetLocalStorageId;
+                        if (string.IsNullOrEmpty(tourLogoFileStorageId))
                         {
-                            var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
-                            var tourLogoFileStorageId = localTourData.CoverImageAsset.AssetLocalStorageId;
-                            if (string.IsNullOrEmpty(tourLogoFileStorageId))
-                            {
-                                tourLogoFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{tour.TourLogo.ImageAssetId}";
-                            }
-
-                            _fileRepository.Delete(tourLogoFileStorageId);
-                            var fileLocalStorageId = _fileRepository.Add(tourLogoFileStorageId, downloadFile.DestinationPathName);
-                            localTourData.CoverImageAsset.AssetLocalStorageId = fileLocalStorageId;
-                            localTourData.CoverImageAsset.LastUpdate = tour.TourLogo.LastUpdate;
-                            _dataRepository.Update(localTourData);
+                            tourLogoFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{tour.TourLogo.ImageAssetId}";
                         }
+
+                        _fileRepository.Delete(tourLogoFileStorageId);
+                        var fileLocalStorageId = _fileRepository.Add(tourLogoFileStorageId, e.FilePath);
+                        localTourData.CoverImageAsset.AssetLocalStorageId = fileLocalStorageId;
+                        localTourData.CoverImageAsset.LastUpdate = tour.TourLogo.LastUpdate;
+                        _dataRepository.Update(localTourData);
                     }
                 };
-                placesAssetsDownloaders.Add(new FileGroupDownloader(new List<IDownloadFile>() { tourLogoImageDownloader }));
+                placesAssetsDownloaders.Add(new FileGroupDownloader(new List<FileDownloader>() { tourLogoImageDownloader }));
             }
 
             FileGroupDownloader nextPlaceToDownload = null;
             foreach (var newlocalTourPlace in newLocalTourModel.Places)
             {
-                var placeAssetsDownloaders = new List<IDownloadFile>();
+                var placeAssetsDownloaders = new List<FileDownloader>();
                 var apiPlace = tour.Places.First(x => x.PlaceId == newlocalTourPlace.PlaceId);
 
-                var localTourPlaceTimeStamp = newlocalTourPlace.AudioAsset.LastUpdate;
+                var localTourPlaceTimeStamp = newlocalTourPlace.AudioAsset.LastUpdate.GetValueOrDefault();
                 if (apiPlace.AudioAsset != null && apiPlace.AudioAsset.LastUpdate > localTourPlaceTimeStamp)
                 {
-                    var placeAudioAssetDownloader = _downloadManager.CreateDownloadFile(apiPlace.AudioAsset.AssetFileUrl);
+                    var placeAudioAssetDownloader = new FileDownloader(apiPlace.AudioAsset.AssetFileUrl, apiPlace.AudioAsset.Name);
 
-                    placeAudioAssetDownloader.PropertyChanged += (s, e) =>
+                    placeAudioAssetDownloader.FileDownloadingFinished += (s, e) =>
                     {
-                        if (e.PropertyName == nameof(IDownloadFile.Status) && s is IDownloadFile downloadFile)
+                        if (e.Status == DownloadingStatus.Success)
                         {
-                            if (downloadFile.Status == DownloadFileStatus.COMPLETED)
+                            var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
+                            var localTourPlace = localTourData.Places.First(x => x.PlaceId == apiPlace.PlaceId);
+                            var placeAudioFileStorageId = localTourPlace.AudioAsset.AssetLocalStorageId;
+                            if (string.IsNullOrEmpty(placeAudioFileStorageId))
                             {
-                                var localTourData = _dataRepository.GetById<ATGTourDetailedDBModel>(newLocalTourModel.ID);
-                                var localTourPlace = localTourData.Places.First(x => x.PlaceId == apiPlace.PlaceId);
-                                var placeAudioFileStorageId = localTourPlace.AudioAsset.AssetLocalStorageId;
-                                if (string.IsNullOrEmpty(placeAudioFileStorageId))
-                                {
-                                    placeAudioFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{localTourPlace.PlaceId}/{localTourPlace.AudioAsset.AudioAssetId}";
-                                }
-
-                                _fileRepository.Delete(placeAudioFileStorageId);
-                                var fileLocalStorageId = _fileRepository.Add(placeAudioFileStorageId, downloadFile.DestinationPathName);
-                                localTourPlace.AudioAsset.AssetLocalStorageId = fileLocalStorageId;
-                                localTourPlace.AudioAsset.LastUpdate = apiPlace.AudioAsset.LastUpdate;
-                                _dataRepository.Update(localTourData);
+                                placeAudioFileStorageId = $"{tour.CountryName}/{tour.Settlement}/{tour.TourId}/{localTourPlace.PlaceId}/{localTourPlace.AudioAsset.AudioAssetId}";
                             }
+
+                            _fileRepository.Delete(placeAudioFileStorageId);
+                            var fileLocalStorageId = _fileRepository.Add(placeAudioFileStorageId, e.FilePath);
+                            localTourPlace.AudioAsset.AssetLocalStorageId = fileLocalStorageId;
+                            localTourPlace.AudioAsset.LastUpdate = apiPlace.AudioAsset.LastUpdate;
+                            _dataRepository.Update(localTourData);
                         }
                     };
                     placeAssetsDownloaders.Add(placeAudioAssetDownloader);
@@ -137,7 +128,7 @@ namespace AudioTouristGuide.MobileApp.Services
                 foreach (var localTourPlaceImageAsset in newlocalTourPlace.PlaceImageAssets)
                 {
                     var apiPlaceImage = apiPlace.ImageAssets.First(x => x.PlaceImageAssetId == localTourPlaceImageAsset.PlaceImageAssetId);
-                    var localTourPlaceImageAssetTimeStamp = localTourPlaceImageAsset.LastUpdate;
+                    var localTourPlaceImageAssetTimeStamp = localTourPlaceImageAsset.LastUpdate.GetValueOrDefault();
                     if (apiPlaceImage.LastUpdate > localTourPlaceImageAssetTimeStamp)
                     {
                         var placeImageAssetDownloader = _downloadManager.CreateDownloadFile(apiPlaceImage.AssetFileUrl);

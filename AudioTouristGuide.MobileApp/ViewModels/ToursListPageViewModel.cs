@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Input;
 using AudioTouristGuide.MobileApp.ApiService.Interfaces;
 using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Models;
 using AudioTouristGuide.MobileApp.Pages;
+using AudioTouristGuide.MobileApp.Services;
 using AudioTouristGuide.MobileApp.Tools;
 using AudioTouristGuide.MobileApp.ViewModels.BaseObjects;
+using Plugin.DownloadManager;
+using Plugin.DownloadManager.Abstractions;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -22,6 +29,20 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         {
             get { return _tours; }
             set { SetProperty(ref _tours, value); }
+        }
+
+        private double _progressValue;
+        public double ProgressValue
+        {
+            get { return _progressValue; }
+            set { SetProperty(ref _progressValue, value); }
+        }
+
+        private string _imageSource;
+        public string ImageSource
+        {
+            get { return _imageSource; }
+            set { SetProperty(ref _imageSource, value); }
         }
 
         private FileGroupsDownloadingInformer _downloadingInformer;
@@ -49,9 +70,21 @@ namespace AudioTouristGuide.MobileApp.ViewModels
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            var dtoTours = await _toursAPIService.GetAllToursAsync();
-            DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(dtoTours.FirstOrDefault().TourId);
-            
+
+            var progressIndicator = new Progress<double>(ReportProgress);
+            var cts = new CancellationTokenSource();
+            var url = "https://cs8.pikabu.ru/post_img/big/2016/12/11/10/1481477167182225143.png";
+            var downloadService = new FileDownloadService();
+            ImageSource = await downloadService.DownloadFileAsync(url, "engImage", progressIndicator, cts.Token);
+
+            //var dtoTours = await _toursAPIService.GetAllToursAsync();
+            //DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(dtoTours.FirstOrDefault().TourId);
+
+        }
+
+        internal void ReportProgress(double value)
+        {
+            ProgressValue = value;
         }
     }
 }
