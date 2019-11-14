@@ -122,7 +122,7 @@ namespace AudioTouristGuide.MobileApp.Tools
                     });
                     
                 }
-                catch (OperationCanceledException ex)
+                catch (OperationCanceledException)
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
@@ -134,7 +134,7 @@ namespace AudioTouristGuide.MobileApp.Tools
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        Status = DownloadingStatus.Cancelled;
+                        Status = DownloadingStatus.Fail;
                         FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(Status, null, ex.ToString()));
                     });
                 }

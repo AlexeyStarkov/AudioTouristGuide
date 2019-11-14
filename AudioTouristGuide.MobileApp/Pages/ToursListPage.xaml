@@ -20,7 +20,7 @@
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Succesfully downloaded files: "/>
-                <Label Text="{Binding DownloadingInformer.SuccesfullyDownloadedFiles}"/>
+                <Label Text="{Binding DownloadingInformer.SuccesfullyDownloadedFilesCount}"/>
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">

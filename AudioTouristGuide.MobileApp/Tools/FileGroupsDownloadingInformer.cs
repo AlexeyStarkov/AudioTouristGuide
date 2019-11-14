@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Plugin.DownloadManager.Abstractions;
+using AudioTouristGuide.MobileApp.Enums;
 using Xamarin.Forms;
 
 namespace AudioTouristGuide.MobileApp.Tools
@@ -9,14 +9,14 @@ namespace AudioTouristGuide.MobileApp.Tools
     {
         public IEnumerable<FileGroupDownloader> FilesGroupsToDownload { get; }
 
-        public int FilesToDownloadCount => FilesGroupsToDownload != null ? FilesGroupsToDownload.Sum(x => x.FilesToDownload.Count()) : 0;
-        public int SuccesfullyDownloadedFiles => FilesGroupsToDownload != null ? FilesGroupsToDownload.Sum(x => x.FilesToDownload.Count(y => y.Status == DownloadFileStatus.COMPLETED)) : 0;
+        public int FilesToDownloadCount { get; }
+        public int SuccesfullyDownloadedFilesCount => FilesGroupsToDownload != null ? FilesGroupsToDownload.SelectMany(x => x.FilesToDownload).Count(x => x.Status == DownloadingStatus.Success) : 0;
         public double Progress
         {
             get
             {
-                var finalizedItemsCount = FilesGroupsToDownload.Sum(x => x.FilesToDownload.Count(y => y.Status == DownloadFileStatus.CANCELED || y.Status == DownloadFileStatus.COMPLETED || y.Status == DownloadFileStatus.FAILED));
-                return finalizedItemsCount / FilesToDownloadCount;
+                var allFilesToDownload = FilesGroupsToDownload.SelectMany(x => x.FilesToDownload);
+                return allFilesToDownload.Sum(x => x.Progress) / allFilesToDownload.Count();
             }
         }
         public int ProgressPercentage => (int)Progress * 100;
@@ -26,15 +26,18 @@ namespace AudioTouristGuide.MobileApp.Tools
         public FileGroupsDownloadingInformer(IEnumerable<FileGroupDownloader> filesGroupsToDownload)
         {
             FilesGroupsToDownload = filesGroupsToDownload;
+            if (FilesGroupsToDownload != null)
+                FilesToDownloadCount = FilesGroupsToDownload.SelectMany(x => x.FilesToDownload).Count();
+
             foreach (var fileGroupToDownload in FilesGroupsToDownload)
             {
                 foreach (var fileToDownload in fileGroupToDownload.FilesToDownload)
                 {
                     fileToDownload.PropertyChanged += (s, e) =>
                     {
-                        if (e.PropertyName == nameof(IDownloadFile.Status))
+                        if (e.PropertyName == nameof(FileDownloader.Status))
                         {
-                            OnPropertyChanged(nameof(SuccesfullyDownloadedFiles));
+                            OnPropertyChanged(nameof(SuccesfullyDownloadedFilesCount));
                             OnPropertyChanged(nameof(Progress));
                             OnPropertyChanged(nameof(ProgressPercentage));
                         }
