@@ -403,3 +403,7 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+
+# wwwroot local files
+**/wwwroot/temp/
+**/wwwroot/fileStorage/
