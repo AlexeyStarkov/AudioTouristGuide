@@ -12,9 +12,9 @@ namespace AudioTouristGuide.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly IBlobStorageService _blobStorageService;
+        private readonly IFileStorageService _blobStorageService;
 
-        public ValuesController(IBlobStorageService blobStorageService)
+        public ValuesController(IFileStorageService blobStorageService)
         {
             _blobStorageService = blobStorageService;
         }
@@ -26,7 +26,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             //string filePath = Path.Combine(ApplicationConstants.TempDirectoryPath, "testImage.jpg");
             //await _blobStorageService.UploadFileAsync("TestContainer", filePath);
 
-            var url = _blobStorageService.GetFileTokenizedUrl("tttt", "d.jpg");
+            var url = _blobStorageService.GetFileUrl("tttt", "d.jpg");
 
             return new JsonResult(url);
         }

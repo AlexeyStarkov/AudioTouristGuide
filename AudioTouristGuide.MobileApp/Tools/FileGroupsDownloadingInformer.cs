@@ -21,7 +21,7 @@ namespace AudioTouristGuide.MobileApp.Tools
         }
         public int ProgressPercentage => (int)Progress * 100;
 
-        public bool HasFinished { get; private set; }
+        public bool HasFinished => ProgressPercentage >= 100;
 
         public FileGroupsDownloadingInformer(IEnumerable<FileGroupDownloader> filesGroupsToDownload)
         {
@@ -40,6 +40,7 @@ namespace AudioTouristGuide.MobileApp.Tools
                             OnPropertyChanged(nameof(SuccesfullyDownloadedFilesCount));
                             OnPropertyChanged(nameof(Progress));
                             OnPropertyChanged(nameof(ProgressPercentage));
+                            OnPropertyChanged(nameof(HasFinished));
                         }
                     };
                 }

@@ -38,11 +38,11 @@ namespace AudioTouristGuide.WebAPI
                     options.OperationFilter<FileUploadOperationFilter>();
                 });
 
-                services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Development")));
+                services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevLocalDb")));
                 services.Configure<AzureBlobStorageConfig>(Configuration.GetSection("AzureBlobStorageConfig"));
                 services.AddTransient<TourDTOConverters>();
 
-                services.AddTransient<IBlobStorageService, BlobStorageService>();
+                services.AddTransient<IFileStorageService, LocalFileStorageService>();
                 services.AddTransient<IToursRepository, ToursRepository>();
                 services.AddTransient<IPlacesRepository, PlacesRepository>();
                 services.AddTransient<IAudioAssetsRepository, AudioAssetsRepository>();

@@ -9,20 +9,19 @@ using Microsoft.Extensions.Options;
 
 namespace AudioTouristGuide.WebAPI.Services
 {
-    public class BlobStorageService : IBlobStorageService
+    public class BlobFileStorageService : IFileStorageService
     {
         private readonly AzureBlobStorageConfig _blobStorageConfig;
         private readonly CloudBlobClient _cloudBlobClient;
 
-        public BlobStorageService(IOptions<AzureBlobStorageConfig> blobStorageConfig)
+        public BlobFileStorageService(IOptions<AzureBlobStorageConfig> blobStorageConfig)
         {
             _blobStorageConfig = blobStorageConfig.Value;
             CloudStorageAccount.TryParse(_blobStorageConfig.ConnectionString, out CloudStorageAccount storageAccount);
             _cloudBlobClient = storageAccount?.CreateCloudBlobClient();
-
         }
 
-        public async Task<FileUploadResult> UploadFileAsync(string containerName, string filePath, string fileName)
+        public async Task<FileUploadResult> SaveFileAsync(string containerName, string filePath, string fileName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(filePath) || _cloudBlobClient == null)
                 return new FileUploadResult(false, fileName, containerName);
@@ -42,7 +41,7 @@ namespace AudioTouristGuide.WebAPI.Services
             return new FileUploadResult(true, fileName, lowerCaseContainerName);
         }
 
-        public string GetFileTokenizedUrl(string containerName, string fileName)
+        public string GetFileUrl(string containerName, string fileName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(fileName) || _cloudBlobClient == null)
                 return null;
@@ -61,7 +60,7 @@ namespace AudioTouristGuide.WebAPI.Services
             return cloudBlockBlob.SnapshotQualifiedUri.AbsoluteUri + accessSignature;
         }
 
-        public async Task RemoveContainerAsync(string containerName)
+        public async Task RemoveFileContainerAsync(string containerName)
         {
             if (!string.IsNullOrEmpty(containerName) || _cloudBlobClient == null)
             {
@@ -70,13 +69,13 @@ namespace AudioTouristGuide.WebAPI.Services
             }
         }
 
-        public BlobContainerInfo GetBlobContainerInfo(string containerName)
+        public FileContainerInfo GetFileContainerInfo(string containerName)
         {
             if (string.IsNullOrEmpty(containerName) || _cloudBlobClient == null)
                 return null;
 
             var container = _cloudBlobClient.GetContainerReference(containerName.ToLower());
-            var containerInfo = new BlobContainerInfo()
+            var containerInfo = new FileContainerInfo()
             {
                 FileCount = 0,
                 DirectoryCount = 0,

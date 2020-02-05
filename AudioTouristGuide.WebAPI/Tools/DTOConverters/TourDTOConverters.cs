@@ -8,11 +8,11 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
 {
     public class TourDTOConverters
     {
-        private readonly IBlobStorageService _blobStorageService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public TourDTOConverters(IBlobStorageService blobStorageService)
+        public TourDTOConverters(IFileStorageService fileStorageService)
         {
-            _blobStorageService = blobStorageService;
+            _fileStorageService = fileStorageService;
         }
 
         public DTOTourDetailedModel DbTourToDTOModel(Tour dbTour)
@@ -26,7 +26,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.Settlement,
                 dbTour.CountryName,
                 dbTour.DataSize,
-                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
+                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _fileStorageService.GetFileUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
                 dbTour.TourPlaces?.Select(x => new DTOPlaceModel(
                     x.Place.PlaceId,
                     x.Place.Name,
@@ -35,8 +35,8 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                     x.Place.Latitude,
                     x.Place.Longitude,
                     x.Place.DataSize,
-                    new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _blobStorageService.GetFileTokenizedUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
-                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
+                    new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _fileStorageService.GetFileUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
+                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _fileStorageService.GetFileUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
                 dbTour.GrossPrice);
         }
 
@@ -50,7 +50,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.CountryName,
                 dbTour.Settlement,
                 dbTour.DataSize,
-                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
+                new DTOImageAssetModel(dbTour.LogoImage.ImageAssetId, dbTour.LogoImage.Name, dbTour.LogoImage.Description, _fileStorageService.GetFileUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName), dbTour.LogoImage.LastUpdate),
                 dbTour.TourPlaces?.Select(x => new DTOPlaceModel(
                     x.Place.PlaceId,
                     x.Place.Name,
@@ -59,8 +59,8 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                     x.Place.Latitude,
                     x.Place.Longitude,
                     x.Place.DataSize,
-                    new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _blobStorageService.GetFileTokenizedUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
-                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _blobStorageService.GetFileTokenizedUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
+                    new DTOAudioAssetModel(x.Place.AudioAsset.AudioAssetId, x.Place.AudioAsset.Name, x.Place.AudioAsset.Description, _fileStorageService.GetFileUrl(x.Place.AudioAsset.AssetContainerName, x.Place.AudioAsset.AssetFileName), x.Place.AudioAsset.LastUpdate),
+                    new List<DTOPlaceImageAssetModel>(x.Place.PlaceImageAssets.Select(y => new DTOPlaceImageAssetModel(y.PlaceImageAssetId, y.Name, y.Description, _fileStorageService.GetFileUrl(y.AssetContainerName, y.AssetFileName), y.PointOfDisplayingStart, y.LastUpdate))))),
                 dbTour.GrossPrice));
         }
 
@@ -73,7 +73,7 @@ namespace AudioTouristGuide.WebAPI.SwaggerTools.DTOConverters
                 dbTour.EstimatedDuration,
                 dbTour.CountryName,
                 dbTour.DataSize,
-                _blobStorageService.GetFileTokenizedUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName),
+                _fileStorageService.GetFileUrl(dbTour.LogoImage.AssetContainerName, dbTour.LogoImage.AssetFileName),
                 dbTour.TourPlaces != null ? dbTour.TourPlaces.Count : 0,
                 dbTour.GrossPrice));
         }

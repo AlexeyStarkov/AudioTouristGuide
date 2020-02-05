@@ -65,7 +65,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
             base.OnNavigatedTo(parameters);
 
             var dtoTours = await _toursAPIService.GetAllToursAsync();
-            DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(dtoTours.FirstOrDefault().TourId);
+            var tourToDownload = dtoTours.FirstOrDefault();
+            DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(tourToDownload.TourId);
 
         }
 

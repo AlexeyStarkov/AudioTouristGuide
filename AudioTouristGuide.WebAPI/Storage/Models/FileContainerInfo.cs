@@ -1,6 +1,6 @@
 ﻿namespace AudioTouristGuide.WebAPI.Storage.Models
 {
-    public class BlobContainerInfo
+    public class FileContainerInfo
     {
         public int FileCount { get; set; }
         public int DirectoryCount { get; set; }

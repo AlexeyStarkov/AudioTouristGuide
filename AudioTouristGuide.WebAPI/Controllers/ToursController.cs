@@ -29,19 +29,19 @@ namespace AudioTouristGuide.WebAPI.Controllers
         private readonly IAudioAssetsRepository _audioAssetsRepository;
         private readonly IImageAssetsRepository _imageAssetsRepository;
         private readonly IPlaceImageAssetsRepository _placeImageAssetsRepository;
-        private readonly IBlobStorageService _blobStorageService;
+        private readonly IFileStorageService _fileStorageService;
         private readonly TourDTOConverters _tourDTOConverters;
 
         public ToursController(IToursRepository toursRepository, IPlacesRepository placesRepository, 
             IAudioAssetsRepository audioAssetsRepository, IImageAssetsRepository imageAssetsRepository,
-            IBlobStorageService blobStorageService, TourDTOConverters tourDTOConverters,
+            IFileStorageService fileStorageService, TourDTOConverters tourDTOConverters,
             IPlaceImageAssetsRepository placeImageAssetsRepository)
         {
             _toursRepository = toursRepository;
             _placesRepository = placesRepository;
             _audioAssetsRepository = audioAssetsRepository;
             _imageAssetsRepository = imageAssetsRepository;
-            _blobStorageService = blobStorageService;
+            _fileStorageService = fileStorageService;
             _tourDTOConverters = tourDTOConverters;
             _placeImageAssetsRepository = placeImageAssetsRepository;
         }
@@ -158,7 +158,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     if (tempFileName == null)
                         return new FileUploadResult(false, null, null);
 
-                    return await _blobStorageService.UploadFileAsync(targetContainerName, tempFilePath, tempFileName);
+                    return await _fileStorageService.SaveFileAsync(targetContainerName, tempFilePath, tempFileName);
                 }
 
                 var tourAssetsUploadingResult = await UploadAssetToAsync(tourLogoFileName, tourAssetsContainerName);
@@ -225,7 +225,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                         }
                     }
 
-                    var placeContainerInfo = _blobStorageService.GetBlobContainerInfo(placeAssetsContainerName);
+                    var placeContainerInfo = _fileStorageService.GetFileContainerInfo(placeAssetsContainerName);
                     dbPlace.DataSize = placeContainerInfo != null ? placeContainerInfo.TotalBytes : 0;
                     _placesRepository.Update(dbPlace);
                     await _placesRepository.SaveChangesAsync();
@@ -233,7 +233,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     dbPlaces.Add(dbPlace);
                 }
 
-                var tourContainerInfo = _blobStorageService.GetBlobContainerInfo(tourAssetsContainerName);
+                var tourContainerInfo = _fileStorageService.GetFileContainerInfo(tourAssetsContainerName);
                 long tourAssetsSize = tourContainerInfo != null ? tourContainerInfo.TotalBytes : 0;
                 tourAssetsSize += dbPlaces.Sum(x => x.DataSize);
 
@@ -272,7 +272,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
             {
                 foreach (var containerName in containersNames)
                 {
-                    await _blobStorageService.RemoveContainerAsync(containerName);
+                    await _fileStorageService.RemoveFileContainerAsync(containerName);
                 }
 
                 return new JsonResult(ex) { StatusCode = StatusCodes.Status500InternalServerError };
@@ -295,12 +295,12 @@ namespace AudioTouristGuide.WebAPI.Controllers
 
             var removingTasks = new List<Task>();
             if (!string.IsNullOrEmpty(tourToRemove.LogoImage?.AssetContainerName))
-                removingTasks.Add(_blobStorageService.RemoveContainerAsync(tourToRemove.LogoImage.AssetContainerName));
+                removingTasks.Add(_fileStorageService.RemoveFileContainerAsync(tourToRemove.LogoImage.AssetContainerName));
 
             foreach (var place in tourToRemove.TourPlaces)
             {
                 if (!string.IsNullOrEmpty(place.Place?.AssetsContainerName))
-                    removingTasks.Add(_blobStorageService.RemoveContainerAsync(place.Place.AssetsContainerName));
+                    removingTasks.Add(_fileStorageService.RemoveFileContainerAsync(place.Place.AssetsContainerName));
             }
 
             await Task.WhenAll(removingTasks);
