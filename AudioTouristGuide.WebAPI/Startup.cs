@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace AudioTouristGuide.WebAPI
@@ -30,16 +31,22 @@ namespace AudioTouristGuide.WebAPI
         {
             try
             {
-                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
                 services.AddSwaggerGen(options =>
                 {
+                    options.DescribeAllParametersInCamelCase();
                     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Audio Tourist Guide API", Version = "v1" });
-                    options.OperationFilter<FileUploadOperationFilter>();
                 });
+                services.AddSwaggerGenNewtonsoftSupport();
 
-                services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevLocalDb")));
-                services.Configure<AzureBlobStorageConfig>(Configuration.GetSection("AzureBlobStorageConfig"));
+                //Local MySQL database
+                services.AddDbContext<DatabaseContext>(options => options.UseMySql(Configuration.GetConnectionString("DevLocalDb")));
+
+                //Azure Database and Azure Blob FileStorage
+                //services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevAzureSQL")));
+                //services.Configure<AzureBlobStorageConfig>(Configuration.GetSection("AzureBlobStorageConfig"));
+
                 services.AddTransient<TourDTOConverters>();
 
                 services.AddTransient<IFileStorageService, LocalFileStorageService>();
@@ -57,7 +64,7 @@ namespace AudioTouristGuide.WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             try
             {
@@ -82,7 +89,11 @@ namespace AudioTouristGuide.WebAPI
                 });
 
                 app.UseHttpsRedirection();
-                app.UseMvc();
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
 
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {

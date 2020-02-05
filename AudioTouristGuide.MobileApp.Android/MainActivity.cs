@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using Plugin.DownloadManager;
 using Plugin.Permissions;
 using Prism.Navigation;
 using Prism.Unity;
@@ -31,7 +30,7 @@ namespace AudioTouristGuide.MobileApp.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             Window.AddFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
-            (CrossDownloadManager.Current as DownloadManagerImplementation).IsVisibleInDownloadsUi = false;
+            //(CrossDownloadManager.Current as DownloadManagerImplementation).IsVisibleInDownloadsUi = false;
 
             LoadApplication(new App());
         }
