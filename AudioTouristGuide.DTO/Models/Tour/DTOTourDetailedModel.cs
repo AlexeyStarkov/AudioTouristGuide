@@ -8,7 +8,7 @@ namespace AudioTouristGuide.DTO.Models.Tour
         public long TourId { get; }
         public string Name { get; }
         public string Description { get; }
-        public TimeSpan EstimatedDuration { get; }
+        public long EstimatedDurationTicks { get; }
         public string CountryName { get; }
         public string Settlement { get; }
         public long DataSize { get; }
@@ -22,7 +22,7 @@ namespace AudioTouristGuide.DTO.Models.Tour
             TourId = tourId;
             Name = name;
             Description = description;
-            EstimatedDuration = estimatedDuration;
+            EstimatedDurationTicks = estimatedDuration.Ticks;
             CountryName = countryName;
             DataSize = dataSize;
             GrossPrice = grossPrice;

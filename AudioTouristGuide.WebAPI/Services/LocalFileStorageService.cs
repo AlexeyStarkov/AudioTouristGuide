@@ -23,7 +23,7 @@ namespace AudioTouristGuide.WebAPI.Services
             var containerDirectory = new DirectoryInfo(containerPath);
             var containerSize = containerDirectory.EnumerateFiles("*", SearchOption.AllDirectories).Sum(fi => fi.Length);
             var containerDirectoriesCount = Directory.GetDirectories(containerPath).Count();
-            var containerFilesCount = Directory.GetFiles(containerName).Count();
+            var containerFilesCount = Directory.GetFiles(containerPath).Count();
 
             return new FileContainerInfo()
             {

@@ -12,7 +12,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         public ATGPlaceImageAssetDBModel(DTOPlaceImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
         {
             PlaceImageAssetId = dtoImageAssetModel.PlaceImageAssetId;
-            PointOfDisplayingStart = dtoImageAssetModel.PointOfDisplayingStart;
+            PointOfDisplayingStart = dtoImageAssetModel.PointOfDisplayingStartTicks;
         }
 
         public ATGPlaceImageAssetDBModel() { }

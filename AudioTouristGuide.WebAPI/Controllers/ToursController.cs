@@ -291,7 +291,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
         {
             var tourToRemove = await _toursRepository.GetByIdAsync(id);
             if (tourToRemove == null)
-                return new JsonResult(null) { StatusCode = StatusCodes.Status404NotFound };
+                return new JsonResult($"Tour with id {id} not found") { StatusCode = StatusCodes.Status404NotFound };
 
             var removingTasks = new List<Task>();
             if (!string.IsNullOrEmpty(tourToRemove.LogoImage?.AssetContainerName))
