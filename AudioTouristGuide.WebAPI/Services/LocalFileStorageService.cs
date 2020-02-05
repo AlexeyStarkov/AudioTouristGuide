@@ -42,25 +42,25 @@ namespace AudioTouristGuide.WebAPI.Services
         {
             await Task.Run(() =>
             {
-                Directory.Delete(Path.Combine(_storagePath, containerName));
+                Directory.Delete(Path.Combine(_storagePath, containerName), true);
             });
         }
 
-        public async Task<FileUploadResult> SaveFileAsync(string containerName, string filePath, string fileName)
+        public async Task<FileSavingResult> SaveFileAsync(string containerName, string filePath, string fileName)
         {
             try
             {
-                var newFilePath = Path.Combine(_storagePath, containerName, fileName);
                 await Task.Run(() =>
                 {
-                    File.Copy(filePath, newFilePath, true);
+                    Directory.CreateDirectory(Path.Combine(_storagePath, containerName));
+                    File.Copy(filePath, Path.Combine(_storagePath, containerName, fileName), true);
                 });
 
-                return new FileUploadResult(true, fileName, containerName);
+                return new FileSavingResult(true, fileName, containerName);
             }
             catch (Exception ex)
             {
-                return new FileUploadResult(false, fileName, containerName);
+                return new FileSavingResult(false, fileName, containerName);
             }
         }
     }

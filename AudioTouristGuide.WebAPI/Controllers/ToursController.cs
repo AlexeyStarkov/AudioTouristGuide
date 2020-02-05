@@ -148,15 +148,15 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 var tourLogoFileName = config.CoverImageFileName;
                 containersNames.Add(tourAssetsContainerName);
 
-                async Task<FileUploadResult> UploadAssetToAsync(string assetFileName, string targetContainerName)
+                async Task<FileSavingResult> UploadAssetToAsync(string assetFileName, string targetContainerName)
                 {
                     var tempFilePath = tempFiles.FirstOrDefault(x => x.Contains(assetFileName));
                     if (tempFilePath == null)
-                        return new FileUploadResult(false, null, null);
+                        return new FileSavingResult(false, null, null);
 
                     var tempFileName = tempFilePath.Split(Path.DirectorySeparatorChar).LastOrDefault();
                     if (tempFileName == null)
-                        return new FileUploadResult(false, null, null);
+                        return new FileSavingResult(false, null, null);
 
                     return await _fileStorageService.SaveFileAsync(targetContainerName, tempFilePath, tempFileName);
                 }

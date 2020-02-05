@@ -21,10 +21,10 @@ namespace AudioTouristGuide.WebAPI.Services
             _cloudBlobClient = storageAccount?.CreateCloudBlobClient();
         }
 
-        public async Task<FileUploadResult> SaveFileAsync(string containerName, string filePath, string fileName)
+        public async Task<FileSavingResult> SaveFileAsync(string containerName, string filePath, string fileName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(filePath) || _cloudBlobClient == null)
-                return new FileUploadResult(false, fileName, containerName);
+                return new FileSavingResult(false, fileName, containerName);
 
             var lowerCaseContainerName = containerName.ToLower();
 
@@ -35,10 +35,10 @@ namespace AudioTouristGuide.WebAPI.Services
 
             var cloudBlockBlob = container.GetBlockBlobReference(fileName);
             if (cloudBlockBlob == null)
-                return new FileUploadResult(false, fileName, lowerCaseContainerName);
+                return new FileSavingResult(false, fileName, lowerCaseContainerName);
 
             await cloudBlockBlob.UploadFromFileAsync(filePath);
-            return new FileUploadResult(true, fileName, lowerCaseContainerName);
+            return new FileSavingResult(true, fileName, lowerCaseContainerName);
         }
 
         public string GetFileUrl(string containerName, string fileName)
