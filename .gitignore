@@ -405,5 +405,5 @@ ASALocalRun/
 .localhistory/
 
 # wwwroot local files
-**/wwwroot/temp/
-**/wwwroot/fileStorage/
+**/wwwroot/[Tt]emp/
+**/wwwroot/[Ff]ileStorage/
