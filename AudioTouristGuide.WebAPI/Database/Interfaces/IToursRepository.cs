@@ -2,7 +2,7 @@
 
 namespace AudioTouristGuide.WebAPI.Database.Interfaces
 {
-    public interface IToursRepository : IRepositoryBase<Tour>
+    public interface IToursRepository : IRepositoryBase<TourDbModel>
     {
     }
 }

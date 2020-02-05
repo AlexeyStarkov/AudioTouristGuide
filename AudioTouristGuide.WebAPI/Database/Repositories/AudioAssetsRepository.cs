@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Database.Repositories
 {
-    public class AudioAssetsRepository : RepositoryBase<AudioAsset>, IAudioAssetsRepository
+    public class AudioAssetsRepository : RepositoryBase<AudioAssetDbModel>, IAudioAssetsRepository
     {
         public AudioAssetsRepository(DatabaseContext dbContext) : base(dbContext)
         {
         }
 
-        public override async Task<IEnumerable<AudioAsset>> GetAllAsync()
+        public override async Task<IEnumerable<AudioAssetDbModel>> GetAllAsync()
         {
-            return await DBContext.AudioAssets.Include(x => x.Place).ToListAsync();
+            return await DBContext.AudioAssetDbModels.Include(x => x.PlaceDbModels).ToListAsync();
         }
 
-        public override async Task<IEnumerable<AudioAsset>> GetAllAsync(Expression<Func<AudioAsset, bool>> expression)
+        public override async Task<IEnumerable<AudioAssetDbModel>> GetAllAsync(Expression<Func<AudioAssetDbModel, bool>> expression)
         {
-            return await DBContext.AudioAssets.Where(expression).ToListAsync();
+            return await DBContext.AudioAssetDbModels.Where(expression).ToListAsync();
         }
 
-        public override async Task<AudioAsset> GetByIdAsync(long id)
+        public override async Task<AudioAssetDbModel> GetByIdAsync(long id)
         {
-            return await DBContext.AudioAssets.Include(x => x.Place).FirstOrDefaultAsync(x => x.AudioAssetId == id);
+            return await DBContext.AudioAssetDbModels.Include(x => x.PlaceDbModels).FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

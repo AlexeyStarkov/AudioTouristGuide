@@ -28,7 +28,7 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
             TourId = dtoTourModel.TourId;
             Name = dtoTourModel.Name;
             Description = dtoTourModel.Description;
-            EstimatedDuration = dtoTourModel.EstimatedDurationTicks;
+            EstimatedDuration = new TimeSpan(dtoTourModel.EstimatedDurationTicks);
             CountryName = dtoTourModel.CountryName;
             DataSize = dtoTourModel.DataSize;
             GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);

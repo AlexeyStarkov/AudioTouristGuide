@@ -7,14 +7,14 @@ namespace AudioTouristGuide.WebAPI.Database
 {
     public class DatabaseContext : DbContext
     {
-        public DbSet<Member> Members { get; set; }
+        public DbSet<MemberDbModel> MemberDbModels { get; set; }
 
-        public DbSet<Place> Places { get; set; }
-        public DbSet<Tour> Tours { get; set; }
+        public DbSet<PlaceDbModel> PlaceDbModels { get; set; }
+        public DbSet<TourDbModel> TourDbModels { get; set; }
 
-        public DbSet<AudioAsset> AudioAssets { get; set; }
-        public DbSet<ImageAsset> ImageAssets { get; set; }
-        public DbSet<PlaceImageAsset> PlaceImageAssets { get; set; }
+        public DbSet<AudioAssetDbModel> AudioAssetDbModels { get; set; }
+        public DbSet<ImageAssetDbModel> ImageAssetDbModels { get; set; }
+        public DbSet<PlaceImageAssetDbModel> PlaceImageAssetDbModels { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -22,60 +22,60 @@ namespace AudioTouristGuide.WebAPI.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TourPlace>()
-                .HasKey(t => new { t.PlaceId, t.TourId });
+            modelBuilder.Entity<TourPlaceDbModel>()
+                .HasKey(t => new { t.PlaceDbModelId, t.TourDbModelId });
 
-            modelBuilder.Entity<TourPlace>()
-                .HasOne(tp => tp.Place)
+            modelBuilder.Entity<TourPlaceDbModel>()
+                .HasOne(tp => tp.PlaceDbModel)
                 .WithMany(p => p.TourPlaces)
-                .HasForeignKey(tp => tp.PlaceId);
+                .HasForeignKey(tp => tp.PlaceDbModelId);
 
-            modelBuilder.Entity<TourPlace>()
-                .HasOne(tp => tp.Tour)
-                .WithMany(t => t.TourPlaces)
-                .HasForeignKey(tp => tp.TourId);
-
-
-            modelBuilder.Entity<MemberPurchasedTour>()
-                .HasKey(mt => new { mt.MemberId, mt.TourId });
-
-            modelBuilder.Entity<MemberPurchasedTour>()
-                .HasOne(mt => mt.Tour)
-                .WithMany(t => t.MemberPurchasedTours)
-                .HasForeignKey(mt => mt.TourId);
-
-            modelBuilder.Entity<MemberPurchasedTour>()
-                .HasOne(mt => mt.Member)
-                .WithMany(t => t.MemberPurchasedTours)
-                .HasForeignKey(mt => mt.MemberId);
+            modelBuilder.Entity<TourPlaceDbModel>()
+                .HasOne(tp => tp.TourDbModel)
+                .WithMany(t => t.TourPlaceDbModels)
+                .HasForeignKey(tp => tp.TourDbModelId);
 
 
-            modelBuilder.Entity<MemberFavoriteTour>()
-                .HasKey(mt => new { mt.MemberId, mt.TourId });
+            modelBuilder.Entity<MemberPurchasedTourDbModel>()
+                .HasKey(mt => new { mt.MemberDbModelId, mt.TourDbModelId });
 
-            modelBuilder.Entity<MemberFavoriteTour>()
-                .HasOne(mt => mt.Tour)
-                .WithMany(t => t.MemberFavoriteTours)
-                .HasForeignKey(mt => mt.TourId);
+            modelBuilder.Entity<MemberPurchasedTourDbModel>()
+                .HasOne(mt => mt.TourDbModel)
+                .WithMany(t => t.MemberPurchasedTourDbModels)
+                .HasForeignKey(mt => mt.TourDbModelId);
 
-            modelBuilder.Entity<MemberFavoriteTour>()
-                .HasOne(mt => mt.Member)
-                .WithMany(t => t.MemberFavoriteTours)
-                .HasForeignKey(mt => mt.MemberId);
+            modelBuilder.Entity<MemberPurchasedTourDbModel>()
+                .HasOne(mt => mt.MemberDbModel)
+                .WithMany(t => t.MemberPurchasedTourDbModels)
+                .HasForeignKey(mt => mt.MemberDbModelId);
 
 
-            modelBuilder.Entity<MemberDesiredTour>()
-                .HasKey(mt => new { mt.MemberId, mt.TourId });
+            modelBuilder.Entity<MemberFavoriteTourDbModel>()
+                .HasKey(mt => new { mt.MemberDbModelId, mt.TourDbModelId });
 
-            modelBuilder.Entity<MemberDesiredTour>()
-                .HasOne(mt => mt.Tour)
-                .WithMany(t => t.MemberDesiredTours)
-                .HasForeignKey(mt => mt.TourId);
+            modelBuilder.Entity<MemberFavoriteTourDbModel>()
+                .HasOne(mt => mt.TourDbModel)
+                .WithMany(t => t.MemberFavoriteTourDbModels)
+                .HasForeignKey(mt => mt.TourDbModelId);
 
-            modelBuilder.Entity<MemberDesiredTour>()
-                .HasOne(mt => mt.Member)
-                .WithMany(t => t.MemberDesiredTour)
-                .HasForeignKey(mt => mt.MemberId);
+            modelBuilder.Entity<MemberFavoriteTourDbModel>()
+                .HasOne(mt => mt.MemberDbModel)
+                .WithMany(t => t.MemberFavoriteTourDbModels)
+                .HasForeignKey(mt => mt.MemberDbModelId);
+
+
+            modelBuilder.Entity<MemberDesiredTourDbModel>()
+                .HasKey(mt => new { mt.MemberDbModelId, mt.TourDbModelId });
+
+            modelBuilder.Entity<MemberDesiredTourDbModel>()
+                .HasOne(mt => mt.TourDbModel)
+                .WithMany(t => t.MemberDesiredTourDbModels)
+                .HasForeignKey(mt => mt.TourDbModelId);
+
+            modelBuilder.Entity<MemberDesiredTourDbModel>()
+                .HasOne(mt => mt.MemberDbModel)
+                .WithMany(t => t.MemberDesiredTourDbModels)
+                .HasForeignKey(mt => mt.MemberDbModelId);
         }
     }
 }

@@ -9,36 +9,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AudioTouristGuide.WebAPI.Database.Repositories
 {
-    public class ToursRepository : RepositoryBase<Tour>, IToursRepository
+    public class ToursRepository : RepositoryBase<TourDbModel>, IToursRepository
     {
         public ToursRepository(DatabaseContext dbContext) : base(dbContext)
         {
         }
 
-        public override async Task<IEnumerable<Tour>> GetAllAsync()
+        public override async Task<IEnumerable<TourDbModel>> GetAllAsync()
         {
-            return await DBContext.Tours
+            return await DBContext.TourDbModels
                 .Include(t => t.LogoImage)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.AudioAsset)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.PlaceImageAssets)
+                .Include(t => t.TourPlaceDbModels)
+                    .ThenInclude(tp => tp.PlaceDbModel.AudioAssetDbModel)
+                .Include(t => t.TourPlaceDbModels)
+                    .ThenInclude(tp => tp.PlaceDbModel.PlaceImageAssetDbModels)
                 .ToListAsync();
         }
 
-        public override async Task<Tour> GetByIdAsync(long id)
+        public override async Task<TourDbModel> GetByIdAsync(long id)
         {
-            return await DBContext.Tours
+            return await DBContext.TourDbModels
                 .Include(t => t.LogoImage)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.AudioAsset)
-                .Include(t => t.TourPlaces)
-                    .ThenInclude(tp => tp.Place.PlaceImageAssets).FirstOrDefaultAsync(t => t.TourId == id);
+                .Include(t => t.TourPlaceDbModels)
+                    .ThenInclude(tp => tp.PlaceDbModel.AudioAssetDbModel)
+                .Include(t => t.TourPlaceDbModels)
+                    .ThenInclude(tp => tp.PlaceDbModel.PlaceImageAssetDbModels).FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public override async Task<IEnumerable<Tour>> GetAllAsync(Expression<Func<Tour, bool>> expression)
+        public override async Task<IEnumerable<TourDbModel>> GetAllAsync(Expression<Func<TourDbModel, bool>> expression)
         {
-            return await DBContext.Tours.Where(expression).ToListAsync();
+            return await DBContext.TourDbModels.Where(expression).ToListAsync();
         }
     }
 }

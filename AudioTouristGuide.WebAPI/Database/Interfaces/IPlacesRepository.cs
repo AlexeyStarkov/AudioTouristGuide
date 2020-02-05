@@ -2,7 +2,7 @@
 
 namespace AudioTouristGuide.WebAPI.Database.Interfaces
 {
-    public interface IPlacesRepository : IRepositoryBase<Place>
+    public interface IPlacesRepository : IRepositoryBase<PlaceDbModel>
     {
     }
 }

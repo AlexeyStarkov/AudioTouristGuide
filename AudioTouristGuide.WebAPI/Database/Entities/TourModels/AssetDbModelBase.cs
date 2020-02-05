@@ -2,7 +2,7 @@
 
 namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
 {
-    public abstract class AssetBase
+    public abstract class AssetDbModelBase : DbModelBase
     {
         public string Name { get; set; }
         public string Description { get; set; }

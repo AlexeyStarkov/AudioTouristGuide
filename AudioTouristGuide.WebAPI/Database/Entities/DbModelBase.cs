@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AudioTouristGuide.WebAPI.Database.Entities.TourModels
+namespace AudioTouristGuide.WebAPI.Database.Entities
 {
-    public class ImageAsset : AssetBase
+    public abstract class DbModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ImageAssetId { get; set; }
+        public long Id { get; set; }
     }
 }

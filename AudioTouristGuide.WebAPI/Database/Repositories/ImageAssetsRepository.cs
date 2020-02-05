@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Database.Repositories
 {
-    public class ImageAssetsRepository : RepositoryBase<ImageAsset>, IImageAssetsRepository
+    public class ImageAssetsRepository : RepositoryBase<ImageAssetDbModel>, IImageAssetsRepository
     {
         public ImageAssetsRepository(DatabaseContext dbContext) : base(dbContext)
         {
         }
 
-        public override async Task<IEnumerable<ImageAsset>> GetAllAsync()
+        public override async Task<IEnumerable<ImageAssetDbModel>> GetAllAsync()
         {
-            return await DBContext.ImageAssets.ToListAsync();
+            return await DBContext.ImageAssetDbModels.ToListAsync();
         }
 
-        public override async Task<IEnumerable<ImageAsset>> GetAllAsync(Expression<Func<ImageAsset, bool>> expression)
+        public override async Task<IEnumerable<ImageAssetDbModel>> GetAllAsync(Expression<Func<ImageAssetDbModel, bool>> expression)
         {
-            return await DBContext.ImageAssets.Where(expression).ToListAsync();
+            return await DBContext.ImageAssetDbModels.Where(expression).ToListAsync();
         }
 
-        public override async Task<ImageAsset> GetByIdAsync(long id)
+        public override async Task<ImageAssetDbModel> GetByIdAsync(long id)
         {
-            return await DBContext.ImageAssets.FirstOrDefaultAsync(x => x.ImageAssetId == id);
+            return await DBContext.ImageAssetDbModels.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

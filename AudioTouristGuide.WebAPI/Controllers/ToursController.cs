@@ -32,7 +32,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly TourDTOConverters _tourDTOConverters;
 
-        public ToursController(IToursRepository toursRepository, IPlacesRepository placesRepository, 
+        public ToursController(IToursRepository toursRepository, IPlacesRepository placesRepository,
             IAudioAssetsRepository audioAssetsRepository, IImageAssetsRepository imageAssetsRepository,
             IFileStorageService fileStorageService, TourDTOConverters tourDTOConverters,
             IPlaceImageAssetsRepository placeImageAssetsRepository)
@@ -142,7 +142,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     return new JsonResult(validationErrorMessages) { StatusCode = StatusCodes.Status400BadRequest };
 
                 //upload tour assets to azure blob storage
-                var tourAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-",string.Empty);
+                var tourAssetsContainerGuid = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var tourAssetsContainerName = $"{config.CountryName.Replace(" ", string.Empty)}-{config.Settlement.Replace(" ", string.Empty)}-{config.Name.Replace(" ", string.Empty)}-{tourAssetsContainerGuid}";
                 tourAssetsContainerName = tourAssetsContainerName.Length > 62 ? tourAssetsContainerName.Substring(0, 62) : tourAssetsContainerName;
                 var tourLogoFileName = config.CoverImageFileName;
@@ -166,7 +166,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     return new JsonResult(null) { StatusCode = StatusCodes.Status500InternalServerError };
 
                 //add tour places to database and upload place assets to azure blob storage
-                var dbPlaces = new List<Place>();
+                var dbPlaces = new List<PlaceDbModel>();
 
                 foreach (var place in config.Places)
                 {
@@ -175,7 +175,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     placeAssetsContainerName = placeAssetsContainerName.Length > 62 ? placeAssetsContainerName.Substring(0, 62) : placeAssetsContainerName;
                     containersNames.Add(placeAssetsContainerName);
 
-                    var dbPlace = new Place()
+                    var dbPlace = new PlaceDbModel()
                     {
                         Name = place.Name,
                         Description = place.Description,
@@ -191,14 +191,14 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     var audioTrackUploadingResult = await UploadAssetToAsync(audioTrackFileName, placeAssetsContainerName);
                     if (audioTrackUploadingResult.HasSuccess)
                     {
-                        var dbAudioAsset = new AudioAsset()
+                        var dbAudioAsset = new AudioAssetDbModel()
                         {
                             Name = place.AudioTrack.Name,
                             Description = place.AudioTrack.Description,
                             AssetContainerName = audioTrackUploadingResult.ContainerName,
                             AssetFileName = audioTrackUploadingResult.FileName,
-                            PlaceId = dbPlace.PlaceId,
-                            LastUpdate = DateTime.Now
+                            PlaceDbModelId = dbPlace.Id,
+                            LastUpdate = DateTime.UtcNow
                         };
                         _audioAssetsRepository.Create(dbAudioAsset);
                         await _audioAssetsRepository.SaveChangesAsync();
@@ -210,15 +210,15 @@ namespace AudioTouristGuide.WebAPI.Controllers
                         var imageUploadingResult = await UploadAssetToAsync(imageFileName, placeAssetsContainerName);
                         if (imageUploadingResult.HasSuccess)
                         {
-                            var dbImageAsset = new PlaceImageAsset()
+                            var dbImageAsset = new PlaceImageAssetDbModel()
                             {
                                 Name = image.Name,
                                 Description = image.Description,
                                 PointOfDisplayingStart = image.PointOfDisplayingStart,
                                 AssetContainerName = imageUploadingResult.ContainerName,
                                 AssetFileName = imageUploadingResult.FileName,
-                                Place = dbPlace,
-                                LastUpdate = DateTime.Now
+                                PlaceDbModel = dbPlace,
+                                LastUpdate = DateTime.UtcNow
                             };
                             _placeImageAssetsRepository.Create(dbImageAsset);
                             await _imageAssetsRepository.SaveChangesAsync();
@@ -237,7 +237,7 @@ namespace AudioTouristGuide.WebAPI.Controllers
                 long tourAssetsSize = tourContainerInfo != null ? tourContainerInfo.TotalBytes : 0;
                 tourAssetsSize += dbPlaces.Sum(x => x.DataSize);
 
-                var dbTour = new Tour()
+                var dbTour = new TourDbModel()
                 {
                     Name = config.Name,
                     Description = config.Description,
@@ -246,26 +246,26 @@ namespace AudioTouristGuide.WebAPI.Controllers
                     EstimatedDuration = config.EstimatedDuration,
                     GrossPrice = config.GrossPrice,
                     DataSize = tourAssetsSize,
-                    LogoImage = new ImageAsset()
+                    LogoImage = new ImageAssetDbModel()
                     {
                         Name = tourLogoFileName,
                         AssetContainerName = tourAssetsUploadingResult.ContainerName,
                         AssetFileName = tourAssetsUploadingResult.FileName,
-                        LastUpdate = DateTime.Now
+                        LastUpdate = DateTime.UtcNow
                     }
                 };
                 _toursRepository.Create(dbTour);
                 await _toursRepository.SaveChangesAsync();
 
-                var places = (await _placesRepository.GetAllAsync()).Where(x => dbPlaces.Any(y => y.PlaceId == x.PlaceId));
+                var places = (await _placesRepository.GetAllAsync()).Where(x => dbPlaces.Any(y => y.Id == x.Id));
                 foreach (var place in places)
                 {
-                    place.TourPlaces.Add(new TourPlace() { TourId = dbTour.TourId, PlaceId = place.PlaceId });
+                    place.TourPlaces.Add(new TourPlaceDbModel() { TourDbModelId = dbTour.Id, PlaceDbModelId = place.Id });
                     _placesRepository.Update(place);
                 }
                 await _placesRepository.SaveChangesAsync();
 
-                var addedTour = await _toursRepository.GetByIdAsync(dbTour.TourId);
+                var addedTour = await _toursRepository.GetByIdAsync(dbTour.Id);
                 addedTourDto = _tourDTOConverters.DbTourToDTOModel(addedTour);
             }
             catch (Exception ex)
@@ -297,10 +297,10 @@ namespace AudioTouristGuide.WebAPI.Controllers
             if (!string.IsNullOrEmpty(tourToRemove.LogoImage?.AssetContainerName))
                 removingTasks.Add(_fileStorageService.RemoveFileContainerAsync(tourToRemove.LogoImage.AssetContainerName));
 
-            foreach (var place in tourToRemove.TourPlaces)
+            foreach (var place in tourToRemove.TourPlaceDbModels)
             {
-                if (!string.IsNullOrEmpty(place.Place?.AssetsContainerName))
-                    removingTasks.Add(_fileStorageService.RemoveFileContainerAsync(place.Place.AssetsContainerName));
+                if (!string.IsNullOrEmpty(place.PlaceDbModel?.AssetsContainerName))
+                    removingTasks.Add(_fileStorageService.RemoveFileContainerAsync(place.PlaceDbModel.AssetsContainerName));
             }
 
             await Task.WhenAll(removingTasks);

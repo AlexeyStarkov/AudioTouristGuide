@@ -6,7 +6,8 @@ namespace AudioTouristGuide.WebAPI.Tools
     public static class ApplicationConstants
     {
         public static Regex FileNameRegex = new Regex("^[a-zA-Z0-9]([\\.\\-_]|[a-zA-Z0-9])+");
-        public static string TempDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Temp");
-        public static string FileStorageDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "FileStorage");
+        public static string TempDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Temp");
+        public static string FileStorageDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), FileStorageDirectoryWebPath);
+        public static string FileStorageDirectoryWebPath => Path.Combine("wwwroot", "FileStorage");
     }
 }

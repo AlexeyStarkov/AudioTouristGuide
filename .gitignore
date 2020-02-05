@@ -407,3 +407,5 @@ ASALocalRun/
 # wwwroot local files
 **/wwwroot/[Tt]emp/
 **/wwwroot/[Ff]ileStorage/
+
+**/[Mm]igrations/

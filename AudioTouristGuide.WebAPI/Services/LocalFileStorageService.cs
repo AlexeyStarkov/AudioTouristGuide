@@ -11,10 +11,12 @@ namespace AudioTouristGuide.WebAPI.Services
     public class LocalFileStorageService : IFileStorageService
     {
         private readonly string _storagePath;
+        private readonly string _storageWebPath;
 
         public LocalFileStorageService()
         {
             _storagePath = ApplicationConstants.FileStorageDirectoryPath;
+            _storageWebPath = ApplicationConstants.FileStorageDirectoryWebPath;
         }
 
         public FileContainerInfo GetFileContainerInfo(string containerName)
@@ -35,7 +37,7 @@ namespace AudioTouristGuide.WebAPI.Services
         
         public string GetFileUrl(string containerName, string fileName)
         {
-            return Path.Combine(_storagePath, containerName, fileName);
+            return Path.Combine(_storageWebPath, containerName, fileName);
         }
 
         public async Task RemoveFileContainerAsync(string containerName)

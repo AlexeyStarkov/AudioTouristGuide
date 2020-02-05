@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace AudioTouristGuide.WebAPI.Database.Repositories
 {
-    public class PlaceImageAssetsRepository : RepositoryBase<PlaceImageAsset>, IPlaceImageAssetsRepository
+    public class PlaceImageAssetsRepository : RepositoryBase<PlaceImageAssetDbModel>, IPlaceImageAssetsRepository
     {
         public PlaceImageAssetsRepository(DatabaseContext dbContext) : base(dbContext)
         {
         }
 
-        public override async Task<IEnumerable<PlaceImageAsset>> GetAllAsync()
+        public override async Task<IEnumerable<PlaceImageAssetDbModel>> GetAllAsync()
         {
-            return await DBContext.PlaceImageAssets.Include(x => x.Place).ToListAsync();
+            return await DBContext.PlaceImageAssetDbModels.Include(x => x.PlaceDbModel).ToListAsync();
         }
 
-        public override async Task<IEnumerable<PlaceImageAsset>> GetAllAsync(Expression<Func<PlaceImageAsset, bool>> expression)
+        public override async Task<IEnumerable<PlaceImageAssetDbModel>> GetAllAsync(Expression<Func<PlaceImageAssetDbModel, bool>> expression)
         {
-            return await DBContext.PlaceImageAssets.Where(expression).ToListAsync();
+            return await DBContext.PlaceImageAssetDbModels.Where(expression).ToListAsync();
         }
 
-        public override async Task<PlaceImageAsset> GetByIdAsync(long id)
+        public override async Task<PlaceImageAssetDbModel> GetByIdAsync(long id)
         {
-            return await DBContext.PlaceImageAssets.Include(x => x.Place).FirstOrDefaultAsync(x => x.PlaceImageAssetId == id);
+            return await DBContext.PlaceImageAssetDbModels.Include(x => x.PlaceDbModel).FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
