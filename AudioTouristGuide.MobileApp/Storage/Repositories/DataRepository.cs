@@ -57,7 +57,5 @@ namespace AudioTouristGuide.MobileApp.Storage.Repositories
         {
             return LiteRepository.Database.DropCollection(nameof(T));
         }
-
-        
     }
 }
