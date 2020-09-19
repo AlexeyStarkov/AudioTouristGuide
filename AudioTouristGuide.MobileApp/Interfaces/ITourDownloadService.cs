@@ -5,6 +5,6 @@ namespace AudioTouristGuide.MobileApp.Interfaces
 {
     public interface ITourDownloadService
     {
-        Task<FileGroupsDownloadingInformer> DownloadOrUpdateTourAsync(long tourId);
+        Task<TourDownloadingManager> DownloadOrUpdateTourAsync(long tourId);
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Tools;
+using LiteDB;
 
 namespace AudioTouristGuide.MobileApp.Storage.Models
 {
@@ -17,6 +18,9 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
 
         public ATGAudioAssetDBModel AudioAsset { get; }
         public IEnumerable<ATGPlaceImageAssetDBModel> PlaceImageAssets { get; }
+
+        [BsonIgnore]
+        public int AssetsCount => PlaceImageAssets.Count() + 1;
 
         public ATGPlaceDBModel(DTOPlaceModel dtoPlaceModel)
         {

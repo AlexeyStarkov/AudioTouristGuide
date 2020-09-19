@@ -13,6 +13,8 @@ namespace AudioTouristGuide.MobileApp.Services
 {
     public class TourDownloadService : ITourDownloadService
     {
+        private const string TemporarySubfolderName = "temp";
+
         private readonly IToursAPIService _toursAPIService;
         private readonly IFileRepository _fileRepository;
         private readonly IDataRepository _dataRepository;
@@ -24,7 +26,7 @@ namespace AudioTouristGuide.MobileApp.Services
             _dataRepository = dataRepository;
         }
 
-        public async Task<FileGroupsDownloadingInformer> DownloadOrUpdateTourAsync(long tourId)
+        public async Task<TourDownloadingManager> DownloadOrUpdateTourAsync(long tourId)
         {
             //REFACTOR IS NEEDED
 
@@ -72,7 +74,7 @@ namespace AudioTouristGuide.MobileApp.Services
             var newLocalTourModelLogoLocalTimeStamp = newLocalTourModel.CoverImageAsset.LastUpdate.GetValueOrDefault();
             if (apiTour.TourLogo != null && apiTour.TourLogo.LastUpdate > newLocalTourModelLogoLocalTimeStamp)
             {
-                var tourLogoImageDownloader = new FileDownloader(apiTour.TourLogo.AssetFileUrl, apiTour.TourLogo.Name);
+                var tourLogoImageDownloader = new FileDownloader(apiTour.TourLogo.AssetFileUrl, TemporarySubfolderName, apiTour.TourLogo.Name);
 
                 tourLogoImageDownloader.FileDownloadingFinished += (s, e) =>
                 {
@@ -99,18 +101,18 @@ namespace AudioTouristGuide.MobileApp.Services
             FileGroupDownloader nextGroupToDownload = null;
             foreach (var apiPlace in apiTour.Places)
             {
-                var placeAssetsDownloaders = new List<FileDownloader>();
-                var newlocalTourPlace = newLocalTourModel.Places.FirstOrDefault(x => x.PlaceId == apiPlace.PlaceId);
-                newlocalTourPlace = newLocalTourModel.Places.FirstOrDefault(x => x.PlaceId == 0);
+                var tourSpotAssetsDownloaders = new List<FileDownloader>();
+                var newlocalTourSpot = newLocalTourModel.Places.FirstOrDefault(x => x.PlaceId == apiPlace.PlaceId);
+                newlocalTourSpot = newLocalTourModel.Places.FirstOrDefault(x => x.PlaceId == 0);
 
-                if (newlocalTourPlace != null)
+                if (newlocalTourSpot != null)
                 {
-                    var localTourPlaceTimeStamp = newlocalTourPlace.AudioAsset?.LastUpdate.GetValueOrDefault();
+                    var localTourPlaceTimeStamp = newlocalTourSpot.AudioAsset?.LastUpdate.GetValueOrDefault();
                     if (apiPlace.AudioAsset != null && apiPlace.AudioAsset.LastUpdate > localTourPlaceTimeStamp)
                     {
-                        var placeAudioAssetDownloader = new FileDownloader(apiPlace.AudioAsset.AssetFileUrl, apiPlace.AudioAsset.Name);
+                        var spotAudioAssetDownloader = new FileDownloader(apiPlace.AudioAsset.AssetFileUrl, TemporarySubfolderName, apiPlace.AudioAsset.Name);
 
-                        placeAudioAssetDownloader.FileDownloadingFinished += (s, e) =>
+                        spotAudioAssetDownloader.FileDownloadingFinished += (s, e) =>
                         {
                             if (e.Status == DownloadingStatus.Success)
                             {
@@ -130,20 +132,20 @@ namespace AudioTouristGuide.MobileApp.Services
                                 File.Delete(e.FilePath);
                             }
                         };
-                        placeAssetsDownloaders.Add(placeAudioAssetDownloader);
+                        tourSpotAssetsDownloaders.Add(spotAudioAssetDownloader);
                     }
 
                     foreach (var apiPlaceImage in apiPlace.ImageAssets)
                     {
-                        var localTourPlaceImageAsset = newlocalTourPlace.PlaceImageAssets?.FirstOrDefault(x => x.PlaceImageAssetId == apiPlaceImage.PlaceImageAssetId);
-                        localTourPlaceImageAsset = newlocalTourPlace.PlaceImageAssets.FirstOrDefault(x => x.PlaceImageAssetId == 0);
+                        var localTourSpotImageAsset = newlocalTourSpot.PlaceImageAssets?.FirstOrDefault(x => x.PlaceImageAssetId == apiPlaceImage.PlaceImageAssetId);
+                        localTourSpotImageAsset = newlocalTourSpot.PlaceImageAssets.FirstOrDefault(x => x.PlaceImageAssetId == 0);
 
-                        if (localTourPlaceImageAsset != null)
+                        if (localTourSpotImageAsset != null)
                         {
-                            var localTourPlaceImageAssetTimeStamp = localTourPlaceImageAsset.LastUpdate.GetValueOrDefault();
+                            var localTourPlaceImageAssetTimeStamp = localTourSpotImageAsset.LastUpdate.GetValueOrDefault();
                             if (apiPlaceImage.LastUpdate > localTourPlaceImageAssetTimeStamp)
                             {
-                                var placeImageAssetDownloader = new FileDownloader(apiPlaceImage.AssetFileUrl, apiPlaceImage.Name);
+                                var placeImageAssetDownloader = new FileDownloader(apiPlaceImage.AssetFileUrl, TemporarySubfolderName, apiPlaceImage.Name);
 
                                 placeImageAssetDownloader.FileDownloadingFinished += (s, e) =>
                                 {
@@ -167,25 +169,16 @@ namespace AudioTouristGuide.MobileApp.Services
                                         File.Delete(e.FilePath);
                                     }
                                 };
-                                placeAssetsDownloaders.Add(placeImageAssetDownloader);
+                                tourSpotAssetsDownloaders.Add(placeImageAssetDownloader);
                             }
                         }
                     }
-                    var placeAssetsDownloadersGroup = new FileGroupDownloader(placeAssetsDownloaders);
-                    placeAssetsDownloadersGroup.GroupDownloadedSuccessfully += (s, e) =>
-                    {
-                        nextGroupToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
-                        nextGroupToDownload?.Start();
-
-                    };
+                    var placeAssetsDownloadersGroup = new FileGroupDownloader(tourSpotAssetsDownloaders);
                     placesAssetsDownloaders.Add(placeAssetsDownloadersGroup);
                 }
             }
 
-            nextGroupToDownload = placesAssetsDownloaders.FirstOrDefault(x => !x.HasFinished);
-            nextGroupToDownload?.Start();
-
-            return new FileGroupsDownloadingInformer(placesAssetsDownloaders);
+            return new TourDownloadingManager(tourId, placesAssetsDownloaders, newLocalTourModel.AssetsCount);
         }
     }
 }

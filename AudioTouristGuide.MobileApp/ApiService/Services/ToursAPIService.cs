@@ -8,22 +8,22 @@ namespace AudioTouristGuide.MobileApp.ApiService.Services
 {
     public class ToursAPIService : IToursAPIService
     {
-        private readonly IApiConnectionService _apiConnectionService;
+        private readonly string _apiUrl;
 
-        public ToursAPIService(IApiConnectionService apiConnectionService)
+        public ToursAPIService()
         {
-            _apiConnectionService = apiConnectionService;
+            _apiUrl = App.ApiUrl;
         }
 
         public async Task<IEnumerable<DTOTourDetailedModel>> GetAllToursAsync()
         {
-            var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
+            var toursRefitApi = RestService.For<IToursRefitApi>(_apiUrl);
             return await toursRefitApi.GetAllTours();
         }
 
         public async Task<DTOTourDetailedModel> GetTourByIdAsync(long id)
         {
-            var toursRefitApi = RestService.For<IToursRefitApi>(_apiConnectionService.ApiUrl);
+            var toursRefitApi = RestService.For<IToursRefitApi>(_apiUrl);
             return await toursRefitApi.GetTourById(id);
         }
     }

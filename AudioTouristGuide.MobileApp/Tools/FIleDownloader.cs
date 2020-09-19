@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
+using System.Net;
 using System.Threading.Tasks;
 using AudioTouristGuide.MobileApp.Enums;
 using AudioTouristGuide.MobileApp.EventsArgs;
-using HeyRed.Mime;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -17,15 +14,9 @@ namespace AudioTouristGuide.MobileApp.Tools
     {
         public event FileDownloadingFinishedEventHandler FileDownloadingFinished;
 
-        private const int BufferSize = 4095;
-
-        private readonly string _fileName;
+        private readonly string _filePath;
         private readonly string _url;
 
-        private readonly string _storageFolderPath;
-        private readonly HttpClient _client;
-
-        public CancellationToken CancellationToken { get; private set; }
         public DownloadingStatus Status { get; private set; }
 
         private double _progress;
@@ -39,111 +30,73 @@ namespace AudioTouristGuide.MobileApp.Tools
             }
         }
 
-        public FileDownloader(string url, string fileName)
+        private int _progressPercentage;
+        public int ProgressPercentage
         {
-            _client = new HttpClient();
-            _storageFolderPath = FileSystem.CacheDirectory;
-
-            if (string.IsNullOrEmpty(fileName))
-                _fileName = Guid.NewGuid().ToString();
-
-            _url = url;
-
-            Status = DownloadingStatus.Initialized;
+            get => _progressPercentage;
+            set
+            {
+                _progressPercentage = value;
+                OnPropertyChanged(nameof(ProgressPercentage));
+            }
         }
 
-        public void Start()
+        public FileDownloader(string url, string subfolderName, string fileName)
         {
-            Task.Run(async () =>
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(subfolderName) || string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException("Constructor parameter can't be null or empty");
+            }
+
+            _filePath = $"{FileSystem.AppDataDirectory}/{subfolderName}/{fileName}";
+            _url = url;
+
+            Status = DownloadingStatus.Pending;
+        }
+
+        public async Task DownloadFileAsync()
+        {
+            using (var webClient = new WebClient())
             {
                 try
                 {
-                    Device.BeginInvokeOnMainThread(() => Status = DownloadingStatus.InProgress);
-                    CancellationToken = new CancellationTokenSource().Token;
-                    // Step 1 : Get call
-                    var response = await _client.GetAsync(_url, HttpCompletionOption.ResponseHeadersRead, CancellationToken);
-
-                    if (!response.IsSuccessStatusCode)
+                    webClient.DownloadFileCompleted += (s, e) =>
                     {
-                        throw new Exception(string.Format("The request returned with HTTP status code {0}", response.StatusCode));
-                    }
-
-                    // Step 2 : Get total of data
-                    var totalData = response.Content.Headers.ContentLength.GetValueOrDefault(-1L);
-                    var canSendProgress = totalData != -1L;
-
-                    // Step 3 : Get filePath
-                    var fileExtension = MimeTypesMap.GetExtension(response.Content.Headers?.ContentType.MediaType);
-                    var filePath = _fileName.Contains($".{fileExtension}") ? Path.Combine(_storageFolderPath, $"{_fileName}") : Path.Combine(_storageFolderPath, $"{_fileName}.{fileExtension}");
-
-                    // Step 4 : Download data
-                    using (var fileStream = OpenStream(filePath))
-                    {
-                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        if (e.Cancelled)
                         {
-                            var totalRead = 0L;
-                            var buffer = new byte[BufferSize];
-                            var isMoreDataToRead = true;
-
-                            do
-                            {
-                                CancellationToken.ThrowIfCancellationRequested();
-
-                                var read = await stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken);
-
-                                if (read == 0)
-                                {
-                                    isMoreDataToRead = false;
-                                }
-                                else
-                                {
-                                    // Write data on disk.
-                                    await fileStream.WriteAsync(buffer, 0, read);
-
-                                    totalRead += read;
-
-                                    if (canSendProgress)
-                                    {
-                                        Device.BeginInvokeOnMainThread(() =>
-                                        {
-                                            Progress = (totalRead * 1d) / (totalData * 1d);
-                                        });
-                                    }
-                                }
-                            }
-                            while (isMoreDataToRead);
+                            Status = DownloadingStatus.Cancelled;
+                            FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(DownloadingStatus.Cancelled, null, null));
+                        }   
+                        else if (e.Error != null)
+                        {
+                            Status = DownloadingStatus.Fail;
+                            FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(DownloadingStatus.Fail, null, e.Error.Message));
                         }
-                    }
+                        else
+                        {
+                            Status = DownloadingStatus.Success;
+                            FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(DownloadingStatus.Success, _filePath, null));
+                        }   
+                    };
 
-                    Device.BeginInvokeOnMainThread(() =>
+                    webClient.DownloadProgressChanged += (s, e) =>
                     {
-                        Status = DownloadingStatus.Success;
-                        FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(Status, filePath, "The file has been downloaded successfully"));
-                    });
-                    
-                }
-                catch (OperationCanceledException)
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        Status = DownloadingStatus.Cancelled;
-                        FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(Status, null, "Downloading has been cancelled"));
-                    });
+                        Status = DownloadingStatus.InProgress;
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            Progress = e.BytesReceived / e.TotalBytesToReceive;
+                            ProgressPercentage = e.ProgressPercentage;
+                        });
+                    };
+
+                    Status = DownloadingStatus.InProgress;
+                    await webClient.DownloadFileTaskAsync(new Uri(_url), _filePath);
                 }
                 catch (Exception ex)
                 {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        Status = DownloadingStatus.Fail;
-                        FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(Status, null, ex.ToString()));
-                    });
+                    FileDownloadingFinished?.Invoke(this, new FileDownloadingFinishedEventArgs(DownloadingStatus.Fail, null, ex.Message));
                 }
-            });
-        }
-
-        private Stream OpenStream(string path)
-        {
-            return new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, BufferSize);
+            }
         }
     }
 }

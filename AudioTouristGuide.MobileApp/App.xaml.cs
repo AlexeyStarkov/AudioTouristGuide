@@ -15,6 +15,9 @@ namespace AudioTouristGuide.MobileApp
 {
     public partial class App : PrismApplication
     {
+        public static string ServerUrl => "https://localhost:5002/";
+        public static string ApiUrl => $"{ServerUrl}api/v1";
+
         public App() : this(null) { }
 
         public App(IPlatformInitializer initializer) : base(initializer) { }
@@ -29,11 +32,12 @@ namespace AudioTouristGuide.MobileApp
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterPopupNavigationService();
-            containerRegistry.Register<IApiConnectionService, ApiConnectionService>();
             containerRegistry.Register<IToursAPIService, ToursAPIService>();
             containerRegistry.Register<IDataRepository, DataRepository>();
             containerRegistry.Register<IFileRepository, FileRepository>();
-            containerRegistry.RegisterSingleton<ITourDownloadService, TourDownloadService>();
+            containerRegistry.Register<ITourDownloadService, TourDownloadService>();
+            containerRegistry.Register<ISettingsService, SettingsService>();
+            containerRegistry.RegisterSingleton<IDownloadingService, DownloadingService>();
 
             containerRegistry.RegisterForNavigation<ToursListPage, ToursListPageViewModel>();
             containerRegistry.RegisterForNavigation<TourDetailsPage, TourDetailsPageViewModel>();

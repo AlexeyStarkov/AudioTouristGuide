@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AudioTouristGuide.MobileApp.Enums;
 using AudioTouristGuide.MobileApp.EventsArgs;
 
@@ -39,7 +40,7 @@ namespace AudioTouristGuide.MobileApp.Tools
         {
             foreach (var fileToDownload in FilesToDownload)
             {
-                fileToDownload.Start();
+                Task.Run(async () => await fileToDownload.DownloadFileAsync());
             }
         }
     }

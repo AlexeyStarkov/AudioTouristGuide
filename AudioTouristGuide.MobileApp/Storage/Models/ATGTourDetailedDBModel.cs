@@ -23,6 +23,9 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
 
         public IEnumerable<ATGPlaceDBModel> Places { get; set; }
 
+        [BsonIgnore]
+        public int AssetsCount => Places.Sum(x => x.AssetsCount) + 1;
+
         public ATGTourDetailedDBModel(DTOTourDetailedModel dtoTourModel)
         {
             TourId = dtoTourModel.TourId;

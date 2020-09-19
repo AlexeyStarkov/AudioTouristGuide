@@ -31,6 +31,7 @@ namespace AudioTouristGuide.WebAPI
         {
             try
             {
+                //services.AddLetsEncrypt();
                 services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
                 services.AddSwaggerGen(options =>
@@ -76,6 +77,8 @@ namespace AudioTouristGuide.WebAPI
                 {
                     app.UseHsts();
                 }
+
+                app.UseHttpsRedirection();
 
                 app.UseStaticFiles();
                 // Enable middleware to serve generated Swagger as a JSON endpoint.

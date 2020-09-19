@@ -38,8 +38,8 @@ namespace AudioTouristGuide.MobileApp.ViewModels
             set { SetProperty(ref _imageSource, value); }
         }
 
-        private FileGroupsDownloadingInformer _downloadingInformer;
-        public FileGroupsDownloadingInformer DownloadingInformer
+        private TourDownloadingManager _downloadingInformer;
+        public TourDownloadingManager DownloadingInformer
         {
             get => _downloadingInformer;
             set { SetProperty(ref _downloadingInformer, value); }
@@ -66,7 +66,9 @@ namespace AudioTouristGuide.MobileApp.ViewModels
 
             var dtoTours = await _toursAPIService.GetAllToursAsync();
             var tourToDownload = dtoTours.FirstOrDefault();
-            DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(tourToDownload.TourId);
+
+            if (tourToDownload != null)
+                DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(tourToDownload.TourId);
 
         }
 

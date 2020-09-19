@@ -2,7 +2,7 @@
 {
     public enum DownloadingStatus
     {
-        Initialized,
+        Pending,
         InProgress,
         Success,
         Fail,
