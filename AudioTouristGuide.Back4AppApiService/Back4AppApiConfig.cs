@@ -3,7 +3,6 @@ using AudioTouristGuide.Back4AppApiService.DTO.Location;
 using AudioTouristGuide.Back4AppApiService.DTO.Members;
 using AudioTouristGuide.Back4AppApiService.DTO.Tours;
 using Parse;
-using System.Threading.Tasks;
 
 namespace AudioTouristGuide.Back4AppApiService
 {
@@ -13,27 +12,32 @@ namespace AudioTouristGuide.Back4AppApiService
         private const string ParseApplicationId = "NDPrQpRcLSrJ857NetukdvGjKHoErgl33LVYcjPk";
         private const string ParsePlatformKey = "FpkaFDCLVifqBwJp8DZ9XzSajHq1uPzySDI5al5e";
 
-        private static ParseClient _client;
+        public const string GuestUsername = "Guest";
+        public const string GuestPassword = "Guest";
+
+        private static bool _isInitialized;
         public static ParseClient Init()
         {
-            if (_client != null)
+            if (_isInitialized)
             {
-                return _client;
+                return ParseClient.Instance;
             }
             else
             {
-                _client = new ParseClient(ParseApplicationId, ServerUri, ParsePlatformKey);
-                
-                _client.Services.RegisterSubclass(typeof(FileAssetDTOModel));
-                _client.Services.RegisterSubclass(typeof(AssetTypeDTOModel));
-                _client.Services.RegisterSubclass(typeof(CountryDTOModel));
-                _client.Services.RegisterSubclass(typeof(LocationDTOModel));
-                _client.Services.RegisterSubclass(typeof(AuthorDTOModel));
-                _client.Services.RegisterSubclass(typeof(SlideshowTimeCodeDTOModel));
-                _client.Services.RegisterSubclass(typeof(TourDTOModel));
-                _client.Services.RegisterSubclass(typeof(TourSpotDTOModel));
+                var client = new ParseClient(ParseApplicationId, ServerUri, ParsePlatformKey);
 
-                return _client;
+                client.Services.RegisterSubclass(typeof(FileAssetDTOModel));
+                client.Services.RegisterSubclass(typeof(AssetTypeDTOModel));
+                client.Services.RegisterSubclass(typeof(CountryDTOModel));
+                client.Services.RegisterSubclass(typeof(LocationDTOModel));
+                client.Services.RegisterSubclass(typeof(AuthorDTOModel));
+                client.Services.RegisterSubclass(typeof(SlideshowTimeCodeDTOModel));
+                client.Services.RegisterSubclass(typeof(TourDTOModel));
+                client.Services.RegisterSubclass(typeof(TourSpotDTOModel));
+
+                client.Publicize();
+                _isInitialized = true;
+                return client;
             }
         }
     }
