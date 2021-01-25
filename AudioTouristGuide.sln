@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioTouristGuide.DTO", "AudioTouristGuide.DTO\AudioTouristGuide.DTO.csproj", "{D5A6B168-6B31-4ED4-9463-C22213EE0E53}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioTouristGuide.MobileApp.Android", "AudioTouristGuide.MobileApp.Android\AudioTouristGuide.MobileApp.Android.csproj", "{A359C662-14D7-41C6-944E-FB5AB8D05702}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioTouristGuide.MobileApp.iOS", "AudioTouristGuide.MobileApp.iOS\AudioTouristGuide.MobileApp.iOS.csproj", "{F2E898A6-14CC-4E9D-BA81-51C8696A8D6B}"
@@ -24,22 +22,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Debug|x86.Build.0 = Debug|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|iPhone.Build.0 = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|x86.ActiveCfg = Release|Any CPU
-		{D5A6B168-6B31-4ED4-9463-C22213EE0E53}.Release|x86.Build.0 = Release|Any CPU
 		{A359C662-14D7-41C6-944E-FB5AB8D05702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A359C662-14D7-41C6-944E-FB5AB8D05702}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A359C662-14D7-41C6-944E-FB5AB8D05702}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

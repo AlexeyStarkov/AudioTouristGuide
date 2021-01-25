@@ -1,5 +1,4 @@
 ﻿using System;
-using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Models.BaseClasses;
 
 namespace AudioTouristGuide.MobileApp.Storage.Models
@@ -9,11 +8,11 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         public long PlaceImageAssetId { get; }
         public TimeSpan? PointOfDisplayingStart { get; }
 
-        public ATGPlaceImageAssetDBModel(DTOPlaceImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
-        {
-            PlaceImageAssetId = dtoImageAssetModel.PlaceImageAssetId;
-            PointOfDisplayingStart = new TimeSpan(dtoImageAssetModel.PointOfDisplayingStartTicks);
-        }
+        //public ATGPlaceImageAssetDBModel(DTOPlaceImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
+        //{
+        //    PlaceImageAssetId = dtoImageAssetModel.PlaceImageAssetId;
+        //    PointOfDisplayingStart = new TimeSpan(dtoImageAssetModel.PointOfDisplayingStartTicks);
+        //}
 
         public ATGPlaceImageAssetDBModel() { }
     }

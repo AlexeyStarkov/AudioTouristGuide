@@ -1,5 +1,4 @@
-﻿using AudioTouristGuide.DTO.Models.Tour;
-using AudioTouristGuide.MobileApp.Models.BaseClasses;
+﻿using AudioTouristGuide.MobileApp.Models.BaseClasses;
 
 namespace AudioTouristGuide.MobileApp.Storage.Models
 {
@@ -7,10 +6,10 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
     {
         public long ImageAssetId { get; }
 
-        public ATGImageAssetDBModel(DTOImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
-        {
-            ImageAssetId = dtoImageAssetModel.ImageAssetId;
-        }
+        //public ATGImageAssetDBModel(DTOImageAssetModel dtoImageAssetModel) : base(dtoImageAssetModel)
+        //{
+        //    ImageAssetId = dtoImageAssetModel.ImageAssetId;
+        //}
 
         public ATGImageAssetDBModel() { }
     }

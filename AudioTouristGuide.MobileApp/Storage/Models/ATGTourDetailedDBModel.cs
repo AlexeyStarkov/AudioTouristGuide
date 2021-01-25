@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AudioTouristGuide.DTO.Models.Tour;
 using AudioTouristGuide.MobileApp.Storage.Interfaces;
 using LiteDB;
 
@@ -26,19 +25,19 @@ namespace AudioTouristGuide.MobileApp.Storage.Models
         [BsonIgnore]
         public int AssetsCount => Places.Sum(x => x.AssetsCount) + 1;
 
-        public ATGTourDetailedDBModel(DTOTourDetailedModel dtoTourModel)
-        {
-            TourId = dtoTourModel.TourId;
-            Name = dtoTourModel.Name;
-            Description = dtoTourModel.Description;
-            EstimatedDuration = new TimeSpan(dtoTourModel.EstimatedDurationTicks);
-            CountryName = dtoTourModel.CountryName;
-            DataSize = dtoTourModel.DataSize;
-            GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
-            CoverImageAsset = new ATGImageAssetDBModel(dtoTourModel.TourLogo);
-            Places = dtoTourModel.Places.Select(x => new ATGPlaceDBModel(x));
-            Settlement = dtoTourModel.Settlement;
-        }
+        //public ATGTourDetailedDBModel(DTOTourDetailedModel dtoTourModel)
+        //{
+        //    TourId = dtoTourModel.TourId;
+        //    Name = dtoTourModel.Name;
+        //    Description = dtoTourModel.Description;
+        //    EstimatedDuration = new TimeSpan(dtoTourModel.EstimatedDurationTicks);
+        //    CountryName = dtoTourModel.CountryName;
+        //    DataSize = dtoTourModel.DataSize;
+        //    GrossPrice = dtoTourModel.GrossPrice.GetValueOrDefault(0);
+        //    CoverImageAsset = new ATGImageAssetDBModel(dtoTourModel.TourLogo);
+        //    Places = dtoTourModel.Places.Select(x => new ATGPlaceDBModel(x));
+        //    Settlement = dtoTourModel.Settlement;
+        //}
 
         public ATGTourDetailedDBModel() { }
     }

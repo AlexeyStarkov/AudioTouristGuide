@@ -1,5 +1,4 @@
 ﻿using System;
-using AudioTouristGuide.DTO.Models.Tour;
 
 namespace AudioTouristGuide.MobileApp.Models.BaseClasses
 {
@@ -12,12 +11,12 @@ namespace AudioTouristGuide.MobileApp.Models.BaseClasses
         public DateTime? LastUpdate { get; set; }
         public string AssetLocalStorageId { get; set; }
 
-        protected ATGAssetBaseDBModel(DTOAssetBaseModel dtoAssetBaseModel)
-        {
-            Name = dtoAssetBaseModel.Name;
-            Description = dtoAssetBaseModel.Description;
-            AssetFileUrl = dtoAssetBaseModel.AssetFileUrl;
-        }
+        //protected ATGAssetBaseDBModel(DTOAssetBaseModel dtoAssetBaseModel)
+        //{
+        //    Name = dtoAssetBaseModel.Name;
+        //    Description = dtoAssetBaseModel.Description;
+        //    AssetFileUrl = dtoAssetBaseModel.AssetFileUrl;
+        //}
 
         protected ATGAssetBaseDBModel() { }
     }

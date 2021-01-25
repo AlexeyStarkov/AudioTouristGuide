@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using Plugin.Permissions;
 using Prism.Navigation;
 using Prism.Unity;
 using Xamarin.Forms;
@@ -21,7 +20,7 @@ namespace AudioTouristGuide.MobileApp.Droid
             base.OnCreate(savedInstanceState);
 
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-            Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
+            Rg.Plugins.Popup.Popup.Init(this);
             Forms.SetFlags("CollectionView_Experimental");
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -37,7 +36,7 @@ namespace AudioTouristGuide.MobileApp.Droid
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
-            PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 

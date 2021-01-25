@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using AudioTouristGuide.Back4AppApiService;
+using AudioTouristGuide.Back4AppApiService.DTO.Location;
 using AudioTouristGuide.MobileApp.ApiService.Interfaces;
 using AudioTouristGuide.MobileApp.Interfaces;
 using AudioTouristGuide.MobileApp.Models;
 using AudioTouristGuide.MobileApp.Pages;
 using AudioTouristGuide.MobileApp.Tools;
 using AudioTouristGuide.MobileApp.ViewModels.BaseObjects;
+using Parse;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -52,23 +55,38 @@ namespace AudioTouristGuide.MobileApp.ViewModels
             await NavigationService.NavigateAsync(nameof(TourDetailsPage), navigationParameters);
         });
 
-        public ToursListPageViewModel(INavigationService navigationService, IToursAPIService toursAPIService,
-            ITourDownloadService tourDownloadService)
+        public ToursListPageViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            _toursAPIService = toursAPIService;
-            _tourDownloadService = tourDownloadService;
+            //_toursAPIService = toursAPIService;
+            //_tourDownloadService = tourDownloadService;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
-            var dtoTours = await _toursAPIService.GetAllToursAsync();
-            var tourToDownload = dtoTours.FirstOrDefault();
+            try
+            {
+                ParseObject testObject = new ParseObject("TestDupaClass");
+                testObject.Bind(App.CurrentParseClient);
+                await testObject.SaveAsync();
 
-            if (tourToDownload != null)
-                DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(tourToDownload.TourId);
+
+                var countriesQuery = App.CurrentParseClient.GetQuery<CountryDTOModel>();
+                var countries = await countriesQuery.FindAsync();
+            }
+            catch (System.Exception ex)
+            {
+
+            }
+            
+
+            //var dtoTours = await _toursAPIService.GetAllToursAsync();
+            //var tourToDownload = dtoTours.FirstOrDefault();
+
+            //if (tourToDownload != null)
+            //    DownloadingInformer = await _tourDownloadService.DownloadOrUpdateTourAsync(tourToDownload.TourId);
 
         }
 
