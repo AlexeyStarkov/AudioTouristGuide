@@ -9,8 +9,8 @@ namespace AudioTouristGuide.Back4AppApiService
     public static class Back4AppApiConfig
     {
         private const string ServerUri = "https://parseapi.back4app.com";
-        private const string ParseApplicationId = "NDPrQpRcLSrJ857NetukdvGjKHoErgl33LVYcjPk";
-        private const string ParsePlatformKey = "FpkaFDCLVifqBwJp8DZ9XzSajHq1uPzySDI5al5e";
+        private const string ParseApplicationId = "";
+        private const string ParsePlatformKey = "";
 
         public const string GuestUsername = "Guest";
         public const string GuestPassword = "Guest";
